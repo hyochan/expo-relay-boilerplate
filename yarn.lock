@@ -3588,6 +3588,14 @@
   dependencies:
     "@types/react" "*"
 
+"@types/react-relay@^7.0.7":
+  version "7.0.7"
+  resolved "https://registry.yarnpkg.com/@types/react-relay/-/react-relay-7.0.7.tgz#1919634d638afe467d432760fd8f7924f08a899e"
+  integrity sha512-+HN48iL37ngFpWXIRBPZQ7mN6EGRIqTh774l4XCL0S//2TbbzwQYSJhQ6qwbyno/J3xDGyKlQhGGlol0olJi+w==
+  dependencies:
+    "@types/react" "*"
+    "@types/relay-runtime" "*"
+
 "@types/react-test-renderer@^16.9":
   version "16.9.1"
   resolved "https://registry.yarnpkg.com/@types/react-test-renderer/-/react-test-renderer-16.9.1.tgz#9d432c46c515ebe50c45fa92c6fb5acdc22e39c4"
@@ -3610,6 +3618,11 @@
   dependencies:
     "@types/prop-types" "*"
     csstype "^2.2.0"
+
+"@types/relay-runtime@*":
+  version "8.0.9"
+  resolved "https://registry.yarnpkg.com/@types/relay-runtime/-/relay-runtime-8.0.9.tgz#4d09a8016a9300e3d2575b0a14b314e7763aa2dd"
+  integrity sha512-LD8vLMoKegn/wMo0UPgX3LZ0/3qzVusrLVjAQT6wfDUQA3V9PkrkzUGWCqpPvIgRUPev/vVzVHrNRp9MOpLFfA==
 
 "@types/stack-utils@^1.0.1":
   version "1.0.1"
