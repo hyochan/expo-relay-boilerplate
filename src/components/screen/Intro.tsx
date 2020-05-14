@@ -5,8 +5,10 @@ import { RootStackNavigationProps } from '../navigation/RootStackNavigator';
 import { User } from '../../types';
 import { View } from 'react-native';
 import { getString } from '../../../STRINGS';
+import graphql from 'babel-plugin-relay/macro';
 import styled from 'styled-components/native';
 import { useAppContext } from '../../providers/AppProvider';
+import { useMutation } from 'react-relay/hooks';
 import { useThemeContext } from '../../providers/ThemeProvider';
 
 const Container = styled.View`
@@ -53,6 +55,27 @@ interface Props {
   navigation: RootStackNavigationProps<'Profile'>;
 }
 
+type MutationResponse = {
+  signInEmail: {
+    token: string;
+    user: {
+      id: string;
+    };
+  };
+};
+
+// Define a mutation query
+const SignInEmailMutation = graphql`
+  mutation IntroSignInEmailMutation($email: String!, $password: String!) {
+    signInEmail(email: $email, password: $password) {
+      token
+      user {
+        id
+      }
+    }
+  }
+`;
+
 function Intro(props: Props): React.ReactElement {
   const {
     state: { user },
@@ -60,8 +83,31 @@ function Intro(props: Props): React.ReactElement {
   } = useAppContext();
   const { changeThemeType } = useThemeContext();
   const [isLoggingIn, setIsLoggingIn] = React.useState<boolean>(false);
-  const [email, setEmail] = React.useState<string>('');
-  const [passwd, setPasswd] = React.useState<string>('');
+  const [email, setEmail] = React.useState<string>('ethan1@test.com');
+  const [password, setPassword] = React.useState<string>('test');
+
+  const [commit, isLoading] = useMutation(SignInEmailMutation);
+
+  const mutationConfig = {
+    variables: {
+      email,
+      password,
+    },
+    onCompleted: (response: MutationResponse): void => {
+      const res = response.signInEmail;
+      console.log('Login!', response);
+      setUser({
+        id: res.user.id,
+        token: res.token,
+        email: '',
+      });
+      props.navigation.navigate('Profile');
+    },
+  };
+
+  const handleSignIn = (): void => {
+    commit(mutationConfig);
+  };
 
   return (
     <Container>
@@ -70,11 +116,11 @@ function Intro(props: Props): React.ReactElement {
           value={email}
           onChangeText={(value: string): void => setEmail(value)}
           textContentType="emailAddress"
-          placeholder="dd"
+          placeholder="email"
         />
         <StyledTextInput
-          value={passwd}
-          onChangeText={(value: string): void => setPasswd(value)}
+          value={password}
+          onChangeText={(value: string): void => setPassword(value)}
           textContentType="password"
           secureTextEntry={true}
           placeholder="Password"
@@ -82,10 +128,8 @@ function Intro(props: Props): React.ReactElement {
         <Button
           testID="btn-login"
           imgLeftSrc={IC_MASK}
-          isLoading={isLoggingIn}
-          onClick={(): void =>
-            props.navigation.navigate('Profile')
-          }
+          isLoading={isLoading}
+          onClick={handleSignIn}
           text={getString('LOGIN')}
         />
         <View style={{ marginTop: 8 }} />
