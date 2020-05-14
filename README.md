@@ -12,8 +12,8 @@
 // package.json
 {
 	"dependencies": {
-		"react": "^0.0.0-experimental-33c3af284",
-  		"react-dom": "^0.0.0-experimental-33c3af284",
+		"react": "0.0.0-experimental-f42431abe",
+  		"react-dom": "0.0.0-experimental-f42431abe",
 		"react-relay": "^0.0.0-experimental-895a6fe0",
 	},
 	"devDependencies": {
@@ -24,8 +24,16 @@
 ```
 
 ## 패키지 설치
+> 유의사항
+
+`@experimental`의 버전 값이 예고 없이 변경 됨에 따라 간혹 expo-web의 빌드 단계에서 에러가 생긴다.
+
 ```bash
+# 일반
 yarn add react@experimental react-dom@experimental react-relay@experimental
+
+# 빌드 문제 해결
+yarn add react@0.0.0-experimental-f42431abe react-dom@0.0.0-experimental-f42431abe react-relay@experimental
 ```
 
 ## Babel plugin 설치 / 설정
