@@ -1,5 +1,11 @@
 // your-app-name/src/RelayEnvironment.js
-import { Environment, Network, RecordSource, Store } from 'relay-runtime';
+import {
+  Environment,
+  FetchFunction,
+  Network,
+  RecordSource,
+  Store,
+} from 'relay-runtime';
 import fetchGraphQL from './fetchGraphQL';
 
 type PramsProps = {
@@ -7,10 +13,7 @@ type PramsProps = {
   text: string;
 };
 
-async function fetchRelay(
-  params: PramsProps,
-  variables,
-): Promise<typeof fetchGraphQL> {
+async function fetchRelay(params, variables): Promise<FetchFunction> {
   console.log(
     `fetching query ${params.name} with ${JSON.stringify(variables)}`,
   );

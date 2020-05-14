@@ -77,12 +77,8 @@ const SignInEmailMutation = graphql`
 `;
 
 function Intro(props: Props): React.ReactElement {
-  const {
-    state: { user },
-    setUser,
-  } = useAppContext();
+  const { setUser } = useAppContext();
   const { changeThemeType } = useThemeContext();
-  const [isLoggingIn, setIsLoggingIn] = React.useState<boolean>(false);
   const [email, setEmail] = React.useState<string>('ethan1@test.com');
   const [password, setPassword] = React.useState<string>('test');
 
@@ -93,7 +89,7 @@ function Intro(props: Props): React.ReactElement {
       email,
       password,
     },
-    onCompleted: (response: MutationResponse): void => {
+    onCompleted: (response): void => {
       const res = response.signInEmail;
       console.log('Login!', response);
       setUser({
@@ -111,44 +107,46 @@ function Intro(props: Props): React.ReactElement {
 
   return (
     <Container>
-      <ButtonWrapper>
-        <StyledTextInput
-          value={email}
-          onChangeText={(value: string): void => setEmail(value)}
-          textContentType="emailAddress"
-          placeholder="email"
-        />
-        <StyledTextInput
-          value={password}
-          onChangeText={(value: string): void => setPassword(value)}
-          textContentType="password"
-          secureTextEntry={true}
-          placeholder="Password"
-        />
-        <Button
-          testID="btn-login"
-          imgLeftSrc={IC_MASK}
-          isLoading={isLoading}
-          onClick={handleSignIn}
-          text={getString('LOGIN')}
-        />
-        <View style={{ marginTop: 8 }} />
-        <Button
-          testID="btn-navigate"
-          onClick={(): void =>
-            props.navigation.navigate('Temp', {
-              param: 'GO BACK',
-            })
-          }
-          text={getString('NAVIGATE', { name: 'Temp' })}
-        />
-        <View style={{ marginTop: 8 }} />
-        <Button
-          testID="btn-theme"
-          onClick={(): void => changeThemeType()}
-          text={getString('CHANGE_THEME')}
-        />
-      </ButtonWrapper>
+      <React.Suspense fallback={'Intro fallback...'}>
+        <ButtonWrapper>
+          <StyledTextInput
+            value={email}
+            onChangeText={(value: string): void => setEmail(value)}
+            textContentType="emailAddress"
+            placeholder="email"
+          />
+          <StyledTextInput
+            value={password}
+            onChangeText={(value: string): void => setPassword(value)}
+            textContentType="password"
+            secureTextEntry={true}
+            placeholder="Password"
+          />
+          <Button
+            testID="btn-login"
+            imgLeftSrc={IC_MASK}
+            isLoading={isLoading}
+            onClick={handleSignIn}
+            text={getString('LOGIN')}
+          />
+          <View style={{ marginTop: 8 }} />
+          <Button
+            testID="btn-navigate"
+            onClick={(): void =>
+              props.navigation.navigate('Temp', {
+                param: 'GO BACK',
+              })
+            }
+            text={getString('NAVIGATE', { name: 'Temp' })}
+          />
+          <View style={{ marginTop: 8 }} />
+          <Button
+            testID="btn-theme"
+            onClick={(): void => changeThemeType()}
+            text={getString('CHANGE_THEME')}
+          />
+        </ButtonWrapper>
+      </React.Suspense>
     </Container>
   );
 }

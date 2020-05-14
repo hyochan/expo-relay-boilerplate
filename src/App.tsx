@@ -42,7 +42,9 @@ function ProviderWrapper(): React.ReactElement {
   return (
     <RootProvider>
       <RelayEnvironmentProvider environment={RelayEnvironment}>
-        <App />
+        <React.Suspense fallback={'App fallback...'}>
+          <App />
+        </React.Suspense>
       </RelayEnvironmentProvider>
     </RootProvider>
   );
