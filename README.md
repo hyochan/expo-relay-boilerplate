@@ -1,212 +1,109 @@
-### ANNOUNCEMENT
-
-DO NOT MODIFY OR CHANGE THE CODE BEFORE CONFIRMED BY `DOOBOOLAB`. THIS REPOSITORY IS USED IN `DOOBOO-CLI`.
-
-# Expo TS Boilerplate
-
-[![CircleCI](https://circleci.com/gh/dooboolab/dooboo-expo.svg?style=shield)](https://circleci.com/gh/dooboolab/dooboo-expo)
-[![codecov](https://codecov.io/gh/dooboolab/dooboo-expo/branch/master/graph/badge.svg)](https://codecov.io/gh/dooboolab/dooboo-expo)
-
-> Specification
-
-- [react-native](https://github.com/facebook/react-native)
-- [expo](https://github.com/expo/expo)
-- [react-navigation](https://github.com/react-navigation/react-navigation)
-- [typescript](https://github.com/Microsoft/TypeScript)
-- [localization](https://github.com/stefalda/ReactNativeLocalization)
-- [styled-components](https://github.com/styled-components/styled-components)
-- [ts-jest](https://github.com/kulshekhar/ts-jest)
-- [@testing-library/react-native](https://github.com/testing-library/native-testing-library)
-- [@testing-library/react-hooks](https://github.com/testing-library/react-hooks-testing-library)
-- [react-hook](https://reactjs.org/docs/hooks-intro.html)
-- [prettier](https://prettier.io)
-
-### Gain points
-
-```
-1. Sample of context-api with `react-hook` (`useContext`).
-2. Know how to structure react native app with typescript.
-3. Know how to navigate between screens with `react-navigation`.
-4. Know how to write test code with `testing-library`.
-5. Know how to `lint` your project with `eslint` for both `ts` and maybe some `js`.
-6. Know how to localize your project.
+# Apply Relay hooks on Expo
+> Environment
+```textline
+- node@14.1.0
+- yarn@1.22.4
+- dooboo-cli@3.4.5
+- watchman@4.9.0
 ```
 
-### INSTALL
-
-```
-npm install && npm start
-// or
-yarn && yarn start
-```
-
-### Structures
-
-```text
-app/
-├─ .doobooo // necessary if using dooboo-cli
-├─ .expo
-├─ assets
-│  └─ icons // app icons
-│  └─ images // app images like background images
-├─ node_modules/
-├─ src/
-│  └─ apis
-│  └─ components
-│     └─ navigations
-│     └─ screen
-│     └─ shared
-│  └─ contexts
-│  └─ utils
-│  └─ App.tsx
-├─ test/
-├─ .buckconfig
-├─ .flowconfig
-├─ .gitattributes
-├─ .gitignore
-├─ .watchmanconfig
-├─ app.json
-├─ babel.config.js
-├─ index.js
-├─ jest.config.js
-├─ package.json
-├─ README.md
-├─ STRINGS.js
-├─ tsconfig.json
-└─ tslint.json
+> dependencies
+```json
+// package.json
+{
+	"dependencies": {
+		...
+		"react": "^0.0.0-experimental-33c3af284",
+  		"react-dom": "^0.0.0-experimental-33c3af284",
+		"react-relay": "^0.0.0-experimental-895a6fe0",
+		...
+	},
+	"devDependencies": {
+		...
+		"babel-plugin-relay": "^9.1.0",
+		"graphql": "^15.0.0",
+		...
+	}
+}
 ```
 
-### Running the project
-
-Running the project is as simple as running
-
-```sh
-npm run start
+## 패키지 설치
+```bash
+yarn add react@experimental react-dom@experimental react-relay@experimental
 ```
 
-This runs the `start` script specified in our `package.json`, and will spawn off a server which reloads the page as we save our files.
-Typically the server runs at `http://localhost:8080`, but should be automatically opened for you.
+## Babel plugin 설치 / 설정
+자바스크립트 코드 내의 `graphql tag` 들을 실행할 수 있도록 `babel-plugin`을 설치
 
-## Testing the project
-
-Testing is also just a command away:
-
-```sh
-npm test
+```bash
+yarn add --dev babel-plugin-relay graphql
 ```
 
-> Result
+`.babelrc` 파일의 플러그인 리스트에  `"relay"` 추가
 
-```
-> jest -u
-
- PASS  src/components/shared/__tests__/Button.test.tsx
- PASS  src/components/screen/__tests__/Intro.test.tsx
- › 2 snapshots written.
-
-Snapshot Summary
- › 2 snapshots written in 1 test suite.
-
-Test Suites: 2 passed, 2 total
-Tests:       5 passed, 5 total
-Snapshots:   2 added, 4 passed, 6 total
-Time:        3.055s, estimated 6s
-Ran all test suites
+```json
+{
+	"plugins": [
+		...
+		"relay"
+	]
+}
 ```
 
-### Writing tests with Jest
+## Relay 컴파일러
+Fragment 혹은 Query와 같은 Relay 컴포넌트를 작성할 때마다, Relay 컴파일러의 실행이 필요하다. Relay 컴파일러는 자바스크립트 코드 내의 graphql 을 읽고 분석하며, Relay 런타임에서 사용할 파일을 생성한다.
 
-We've created test examples with jest-ts in `src/components/screen/__tests__` and `src/components/shared/__tests__`. Since react is component oriented, we've designed to focus on writing test in same level of directory with component. You can simply run `npm test` to test if it succeeds and look more closer opening the source.
-
-### Localization
-
-We've defined Localization strings in `STRINGS.js` which is in root dir.
-We used [react-native-localization](https://github.com/stefalda/ReactNativeLocalization) pacakage for this one.
-
-```
-import * as Localization from 'expo-localization';
-import i18n from 'i18n-js';
-
-const en = {
-  HELLO: 'Hello',
-  LOGIN: 'Login',
-  EMAIL: 'Email',
-  PASSWORD: 'Password',
-  SIGNUP: 'SIGN UP',
-  FORGOT_PW: 'Forgot password?',
-  NAVIGATE: 'Navigate',
-  CHANGE_THEME: 'Change theme',
-};
-
-const ko = {
-  HELLO: '안녕하세요',
-  LOGIN: '로그인',
-  EMAIL: '이메일',
-  PASSWORD: '패스워드',
-  SIGNUP: '회원가입',
-  FORGOT_PW: '비밀번호를 잊어버리셨나요?',
-  NAVIGATE: '이동하기',
-  CHANGE_THEME: '테마변경',
-};
-
-i18n.fallbacks = true;
-i18n.translations = { en, ko };
-i18n.locale = Localization.locale;
-
-export const getString = (param: string, mapObj?: object) => {
-  if (mapObj) {
-    i18n.t(param, mapObj);
-  }
-  return i18n.t(param);
-};
+### 컴파일러 설치
+```bash
+yarn add --dev relay-compiler
 ```
 
-Fixed jest setup by adding following in jestSetup.
-
-```
-import { NativeModules } from 'react-native';
-
-/**
- * monkey patching the locale to avoid the error:
- * Something went wrong initializing the native ReactLocalization module
- * https://gist.github.com/MoOx/08b465c3eac9e36e683929532472d1e0
- */
-
-NativeModules.ReactLocalization = {
-  language: 'en_US',
-};
+### 컴파일 스크립트 추가
+우리는 typescript 환경에서 작업하기 때문에 `extensions ts tsx` 또한 추가한다.
+(필요에 따라 `js jsx` 와 같이 추가할 수 있다.)
+```json
+"scripts": {
+	...
+	"relay": "yarn run relay-compiler --schema schema.graphql --src ./src/ --extensions ts tsx --watchman false $@",
+	...
+}
 ```
 
-# Vscode prettier and eslint setup
+## 추가적인 설정
 
-```
-"eslint.enable": true,
-"eslint.validate": [
-    "javascript",
-    "javascriptreact",
-    "typescript",
-    "typescriptreact"
-],
-// prettier extension setting
-"editor.formatOnSave": true,
-"[javascript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-},
-"[javascriptreact]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-},
-"[typescript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-},
-"[typescriptreact]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-},
-"prettier.singleQuote": true,
-"prettier.trailingComma": "all",
-"prettier.arrowParens": "always",
-"prettier.jsxSingleQuote": true
+### relay-config
+
+```bash
+yarn add --dev relay-config
 ```
 
-### Expo
+```js
+// relay.config.js
+module.exports = {
+  // ...
+  // Configuration options accepted by the `relay-compiler` command-line tool and `babel-plugin-relay`.
+  src: "./src",
+  schema: "./data/schema.graphql",
+  exclude: ["**/node_modules/**", "**/__mocks__/**", "**/__generated__/**"],
+}
+```
 
-35
+### Graphql schema script
+
+만약 relay 컴파일에 필요한 schema.graphql 을 커맨드 명령으로 얻고 싶다면, `get-graphql-schema` 라이브러리를 추천한다.
+
+```bash
+yarn add --dev get-graphql-schema
+```
+
+다음과 같이 사용
+
+```json
+"get-graphql-schema": "get-graphql-schema YOUR_GRAPHQL_SERVER_URI > schema.graphql"
+```
+
+### typescript support
+
+```bash
+yarn add --dev relay-compiler-language-typescript @types/react-relay @types/relay-runtime
+```
