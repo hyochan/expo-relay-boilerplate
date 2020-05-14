@@ -37,63 +37,65 @@ const ButtonWrapper = styled.View`
   align-self: center;
 `;
 
-const StyledText = styled.Text`
-  font-size: 18px;
-  line-height: 27px;
+const StyledTextInput = styled.TextInput`
+  width: 90%;
+  height: 40px;
+  align-self: center;
+  border-width: 1.3px;
+  border-color: lightgray;
+  border-radius: 3px;
+  padding: 10px;
+  margin-bottom: 5px;
   color: ${({ theme }): string => theme.fontColor};
 `;
 
 interface Props {
-  navigation: RootStackNavigationProps<'Intro'>;
+  navigation: RootStackNavigationProps<'Profile'>;
 }
 
 function Intro(props: Props): React.ReactElement {
-  let timer: number;
-  const { state: { user }, setUser } = useAppContext();
+  const {
+    state: { user },
+    setUser,
+  } = useAppContext();
   const { changeThemeType } = useThemeContext();
   const [isLoggingIn, setIsLoggingIn] = React.useState<boolean>(false);
-
-  const onLogin = (): void => {
-    setIsLoggingIn(true);
-    timer = setTimeout(() => {
-      const user: User = {
-        displayName: 'dooboolab',
-        age: 30,
-        job: 'developer',
-      };
-      setUser(user);
-      setIsLoggingIn(false);
-      clearTimeout(timer);
-    }, 1000);
-  };
+  const [email, setEmail] = React.useState<string>('');
+  const [passwd, setPasswd] = React.useState<string>('');
 
   return (
     <Container>
-      <ContentWrapper>
-        <StyledText
-          style={{
-            marginTop: 100,
-          }}
-        >
-          {user ? user.displayName : ''}
-        </StyledText>
-        <StyledText>{user ? user.age : ''}</StyledText>
-        <StyledText>{user ? user.job : ''}</StyledText>
-      </ContentWrapper>
       <ButtonWrapper>
+        <StyledTextInput
+          value={email}
+          onChangeText={(value: string): void => setEmail(value)}
+          textContentType="emailAddress"
+          placeholder="dd"
+        />
+        <StyledTextInput
+          value={passwd}
+          onChangeText={(value: string): void => setPasswd(value)}
+          textContentType="password"
+          secureTextEntry={true}
+          placeholder="Password"
+        />
         <Button
           testID="btn-login"
           imgLeftSrc={IC_MASK}
           isLoading={isLoggingIn}
-          onClick={(): void => onLogin()}
+          onClick={(): void =>
+            props.navigation.navigate('Profile')
+          }
           text={getString('LOGIN')}
         />
         <View style={{ marginTop: 8 }} />
         <Button
           testID="btn-navigate"
-          onClick={(): void => props.navigation.navigate('Temp', {
-            param: 'GO BACK',
-          })}
+          onClick={(): void =>
+            props.navigation.navigate('Temp', {
+              param: 'GO BACK',
+            })
+          }
           text={getString('NAVIGATE', { name: 'Temp' })}
         />
         <View style={{ marginTop: 8 }} />

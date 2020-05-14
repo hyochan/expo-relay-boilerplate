@@ -3,12 +3,14 @@ import { ThemeType, useThemeContext } from '../../providers/ThemeProvider';
 
 import Intro from '../screen/Intro';
 import { NavigationContainer } from '@react-navigation/native';
+import Profile from '../screen/Profile';
 import React from 'react';
 import Temp from '../screen/Temp';
 
 export type RootStackParamList = {
   default: undefined;
   Intro: undefined;
+  Profile: undefined;
   Temp: { param: string };
 }
 
@@ -36,6 +38,7 @@ function RootNavigator(): React.ReactElement {
         }
       >
         <Stack.Screen name="Intro" component={Intro} />
+        <Stack.Screen name="Profile" component={Profile} />
         <Stack.Screen name="Temp" component={Temp} />
       </Stack.Navigator>
     </NavigationContainer>
