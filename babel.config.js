@@ -14,5 +14,9 @@ module.exports = function(api) {
     //   ],
     //   "@babel/proposal-object-rest-spread"
     // ],
+    plugins: [
+      'relay',
+      'macros',
+    ],
   };
 };
