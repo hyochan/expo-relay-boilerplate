@@ -15,3 +15,6 @@ web-report/
 
 package-lock.json
 yarn-error*
+
+# relay
+**/__generated__/**
