@@ -12,17 +12,13 @@
 // package.json
 {
 	"dependencies": {
-		...
 		"react": "^0.0.0-experimental-33c3af284",
   		"react-dom": "^0.0.0-experimental-33c3af284",
 		"react-relay": "^0.0.0-experimental-895a6fe0",
-		...
 	},
 	"devDependencies": {
-		...
 		"babel-plugin-relay": "^9.1.0",
 		"graphql": "^15.0.0",
-		...
 	}
 }
 ```
@@ -44,7 +40,6 @@ yarn add --dev babel-plugin-relay graphql
 ```json
 {
 	"plugins": [
-		...
 		"relay"
 	]
 }
@@ -63,9 +58,7 @@ yarn add --dev relay-compiler
 (필요에 따라 `js jsx` 와 같이 추가할 수 있다.)
 ```json
 "scripts": {
-	...
 	"relay": "yarn run relay-compiler --schema schema.graphql --src ./src/ --extensions ts tsx --watchman false $@",
-	...
 }
 ```
 
