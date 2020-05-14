@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 
 import Icons from './utils/Icons';
 import { Image } from 'react-native';
+import RelayEnvironment from './relay/RelayEnvironment';
+import { RelayEnvironmentProvider } from 'react-relay/hooks';
 import RootNavigator from './components/navigation/RootStackNavigator';
 import RootProvider from './providers';
 
@@ -39,7 +41,9 @@ function ProviderWrapper(): React.ReactElement {
   }
   return (
     <RootProvider>
-      <App />
+      <RelayEnvironmentProvider environment={RelayEnvironment}>
+        <App />
+      </RelayEnvironmentProvider>
     </RootProvider>
   );
 }
