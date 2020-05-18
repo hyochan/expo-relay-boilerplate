@@ -61,12 +61,14 @@ yarn add --dev relay-compiler relay-config babel-plugin-relay graphql get-graphq
 ```
 
 ### babel config
+
 ```json
+// .babelrc
 {
-	"plugins": [
-		"relay",
-		"macros"
-	]
+  "plugins": [
+    "relay",
+    "macros"
+  ]
 }
 ```
 
@@ -76,8 +78,9 @@ Relay는 컴포넌트에 fetching 할 데이터 쿼리를 미리 선언합니다
 이 곳에서는 typescript 환경에서 작업하기 때문에 컴파일 옵션으로 `extensions ts tsx`을 추가합니다. (필요에 따라 `js jsx` 와 같이 추가할 수 있습니다.)
 
 ```json
+// package.json
 "scripts": {
-	"relay": "yarn run relay-compiler --schema schema.graphql --src ./src/ --extensions ts tsx --watchman false $@",
+  "relay": "yarn run relay-compiler --schema schema.graphql --src ./src/ --extensions ts tsx --watchman false $@",
 }
 ```
 
