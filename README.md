@@ -53,7 +53,7 @@ yarn relay-watch
 ## Integration log
 > experimental 버전이기 때문에 예상하지 못한 에러가 발생할 수 있습니다.
 
-### Package Install
+### Installation
 ```bash
 yarn add react@experimental react-dom@experimental react-relay@experimental
 
@@ -70,8 +70,8 @@ yarn add --dev relay-compiler relay-config babel-plugin-relay graphql get-graphq
 }
 ```
 
-### Relay 컴파일러
-Relay는 컴포넌트에 fetching 할 데이터 쿼리를 미리 선언합니다. 그리고 이런 쿼리를 relay-compiler에서 컴파일하여 **ahead-of-time code generation**을 완성합니다.
+### relay-compiler
+Relay는 컴포넌트에 fetching 할 데이터 쿼리를 미리 선언합니다. 그리고 이런 쿼리를 `relay-compiler`에서 컴파일하여 **ahead-of-time code generation**을 완성합니다.
 
 이 곳에서는 typescript 환경에서 작업하기 때문에 컴파일 옵션으로 `extensions ts tsx`을 추가합니다. (필요에 따라 `js jsx` 와 같이 추가할 수 있습니다.)
 
@@ -93,8 +93,8 @@ module.exports = {
 }
 ```
 
-### Get graphql schema [Optional]
-만약 relay 컴파일에 필요한 schema.graphql을 URL을 통해 얻고 싶다면, `get-graphql-schema` 라이브러리를 사용할 수 있다.
+### get-graphql-schema [Optional]
+만약 relay 컴파일에 필요한 `schema.graphql`을 URL을 통해 얻고 싶다면, `get-graphql-schema` 라이브러리를 사용할 수 있다.
 
 ```json
 "get-graphql-schema": "get-graphql-schema YOUR_GRAPHQL_SERVER_URI > schema.graphql"
