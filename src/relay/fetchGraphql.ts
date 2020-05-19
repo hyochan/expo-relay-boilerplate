@@ -1,16 +1,25 @@
-async function fetchGraphQL(text: string, variables): Promise<any> {
-  const response = await fetch('https://hackatalk.azurewebsites.net/graphql', {
+import { GraphQLResponse } from 'relay-runtime';
+
+const FETCH_URL = 'https://hackatalk.azurewebsites.net/graphql';
+
+function fetchGraphQL(
+  request,
+  variables,
+  cacheConfig,
+): Promise<GraphQLResponse> {
+  console.log(
+    `fetching query ${request.name} with ${JSON.stringify(variables)}`,
+  );
+  return fetch(FETCH_URL, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      query: text,
+      query: request.text,
       variables,
     }),
-  });
-
-  return await response.json();
+  }).then((response) => response.json());
 }
 
 export default fetchGraphQL;

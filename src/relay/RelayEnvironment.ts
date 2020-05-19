@@ -1,26 +1,34 @@
-// your-app-name/src/RelayEnvironment.js
 import {
+  CacheConfig,
   Environment,
-  FetchFunction,
+  GraphQLResponse,
   Network,
   RecordSource,
+  RequestParameters,
   Store,
+  SubscribeFunction,
+  Variables,
 } from 'relay-runtime';
 import fetchGraphQL from './fetchGraphQL';
+import subscribeGraphQL from './subscribeGraphQL';
 
-type PramsProps = {
-  name: string;
-  text: string;
-};
-
-async function fetchRelay(params, variables): Promise<FetchFunction> {
-  console.log(
-    `fetching query ${params.name} with ${JSON.stringify(variables)}`,
-  );
-  return fetchGraphQL(params.text, variables);
+function fetchFunction(
+  request: RequestParameters,
+  variables: Variables,
+  cacheConfig: CacheConfig,
+): Promise<GraphQLResponse> {
+  return fetchGraphQL(request, variables, cacheConfig);
 }
 
+const subscribeFunction = (
+  request: RequestParameters,
+  variables: Variables,
+  cacheConfig: CacheConfig,
+): SubscribeFunction => {
+  return subscribeGraphQL(request, variables, cacheConfig);
+};
+
 export default new Environment({
-  network: Network.create(fetchRelay),
+  network: Network.create(fetchFunction, subscribeFunction),
   store: new Store(new RecordSource()),
 });
