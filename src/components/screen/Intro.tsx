@@ -1,14 +1,16 @@
+import { RecordSourceSelectorProxy, SelectorData } from 'relay-runtime';
 import Button from '../shared/Button';
 import { IC_MASK } from '../../utils/Icons';
+import type { IntroSignInEmailMutation } from './__generated__/IntroSignInEmailMutation.graphql';
 import React from 'react';
 import { RootStackNavigationProps } from '../navigation/RootStackNavigator';
-import { User } from '../../types';
 import { View } from 'react-native';
 import { getString } from '../../../STRINGS';
 import graphql from 'babel-plugin-relay/macro';
 import styled from 'styled-components/native';
 import { useAppContext } from '../../providers/AppProvider';
 import { useMutation } from 'react-relay/hooks';
+import { useSubscription } from 'relay-hooks';
 import { useThemeContext } from '../../providers/ThemeProvider';
 
 const Container = styled.View`
@@ -23,14 +25,6 @@ const Container = styled.View`
   overflow: hidden;
 `;
 
-const ContentWrapper = styled.View`
-  flex-direction: column;
-  height: 100%;
-  width: 100%;
-  justify-content: flex-start;
-  align-items: center;
-`;
-
 const ButtonWrapper = styled.View`
   position: absolute;
   flex-direction: column;
@@ -40,7 +34,7 @@ const ButtonWrapper = styled.View`
 `;
 
 const StyledTextInput = styled.TextInput`
-  width: 90%;
+  width: 320px;
   height: 40px;
   align-self: center;
   border-width: 1.3px;
@@ -51,18 +45,16 @@ const StyledTextInput = styled.TextInput`
   color: ${({ theme }): string => theme.fontColor};
 `;
 
-interface Props {
-  navigation: RootStackNavigationProps<'Profile'>;
-}
+const ErrorMessage = styled.Text`
+  color: #f57b51;
+  width: 320px;
+  align-self: center;
+  margin-bottom: 10px;
+`;
 
-type MutationResponse = {
-  signInEmail: {
-    token: string;
-    user: {
-      id: string;
-    };
-  };
-};
+interface Props {
+  navigation: RootStackNavigationProps<'Intro'>;
+}
 
 // Define a mutation query
 const SignInEmailMutation = graphql`
@@ -76,13 +68,42 @@ const SignInEmailMutation = graphql`
   }
 `;
 
+const UserSubscription = graphql`
+  subscription IntroUserSubscription {
+    userSignedIn {
+      id
+      email
+    }
+  }
+`;
+// UserSubscription();
+
 function Intro(props: Props): React.ReactElement {
   const { setUser } = useAppContext();
   const { changeThemeType } = useThemeContext();
   const [email, setEmail] = React.useState<string>('ethan1@test.com');
   const [password, setPassword] = React.useState<string>('test');
+  const [error, setError] = React.useState<string>('');
 
-  const [commit, isLoading] = useMutation(SignInEmailMutation);
+  // isInFlight will be true if any mutation triggered by calling commit is still in flight.
+  // commit is a function that accepts a UseMutationConfig. The type of UseMutationConfig is as follows:
+  const [commit, isInFlight] = useMutation(SignInEmailMutation);
+
+  const config = React.useMemo(
+    () => ({
+      variables: {},
+      subscription: UserSubscription,
+      onCompleted: (): void => console.log('Subscription is now closed.'),
+      updater: (store: RecordSourceSelectorProxy, data: SelectorData): void => {
+        const payload = store.getRootField('userSignedIn');
+        const email = payload?.getValue('email');
+        console.log('useSubscription', email);
+      },
+    }),
+    [],
+  );
+
+  useSubscription(config);
 
   const mutationConfig = {
     variables: {
@@ -97,11 +118,16 @@ function Intro(props: Props): React.ReactElement {
         token: res.token,
         email: '',
       });
-      props.navigation.navigate('Profile');
+      // props.navigation.navigate('Profile');
+    },
+    onError: (error): void => {
+      console.error(error);
+      setError('Check your email and password');
     },
   };
 
   const handleSignIn = (): void => {
+    setError('');
     commit(mutationConfig);
   };
 
@@ -122,10 +148,14 @@ function Intro(props: Props): React.ReactElement {
             secureTextEntry={true}
             placeholder="Password"
           />
+          {error.length > 0 && (
+            <ErrorMessage numberOfLines={1}>{error}</ErrorMessage>
+          )}
+
           <Button
             testID="btn-login"
             imgLeftSrc={IC_MASK}
-            isLoading={isLoading}
+            isLoading={isInFlight}
             onClick={handleSignIn}
             text={getString('LOGIN')}
           />
