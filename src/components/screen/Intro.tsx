@@ -1,7 +1,12 @@
-import { RecordSourceSelectorProxy, SelectorData } from 'relay-runtime';
+import {
+  GraphQLSubscriptionConfig,
+  OperationType,
+  RecordSourceSelectorProxy,
+  SelectorData,
+  SelectorStoreUpdater,
+} from 'relay-runtime';
 import Button from '../shared/Button';
 import { IC_MASK } from '../../utils/Icons';
-import type { IntroSignInEmailMutation } from './__generated__/IntroSignInEmailMutation.graphql';
 import React from 'react';
 import { RootStackNavigationProps } from '../navigation/RootStackNavigator';
 import { View } from 'react-native';
@@ -89,22 +94,6 @@ function Intro(props: Props): React.ReactElement {
   // commit is a function that accepts a UseMutationConfig. The type of UseMutationConfig is as follows:
   const [commit, isInFlight] = useMutation(SignInEmailMutation);
 
-  const config = React.useMemo(
-    () => ({
-      variables: {},
-      subscription: UserSubscription,
-      onCompleted: (): void => console.log('Subscription is now closed.'),
-      updater: (store: RecordSourceSelectorProxy, data: SelectorData): void => {
-        const payload = store.getRootField('userSignedIn');
-        const email = payload?.getValue('email');
-        console.log('useSubscription', email);
-      },
-    }),
-    [],
-  );
-
-  useSubscription(config);
-
   const mutationConfig = {
     variables: {
       email,
@@ -125,6 +114,27 @@ function Intro(props: Props): React.ReactElement {
       setError('Check your email and password');
     },
   };
+
+  const subscriptionConfig = React.useMemo(
+    () => ({
+      variables: {},
+      subscription: UserSubscription,
+      onCompleted: (): void => console.log('Subscription is now closed.'),
+      updater: (
+        store: RecordSourceSelectorProxy<{}>,
+        data: SelectorData,
+      ): void => {
+        const payload = store.getRootField('userSignedIn');
+        const email = payload?.getValue('email');
+        console.log('useSubscription', email);
+      },
+    }),
+    [],
+  );
+
+  // Create a subscription when the component is mounted with the given config
+  // Unsubscribe from that subscription when the component is unmounted
+  useSubscription(subscriptionConfig);
 
   const handleSignIn = (): void => {
     setError('');

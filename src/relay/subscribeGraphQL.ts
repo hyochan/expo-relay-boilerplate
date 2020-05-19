@@ -8,6 +8,7 @@ const subscriptionClient = new SubscriptionClient(SUBSCRIPTION_URL, {
 });
 
 function subscribeGraphQL(request, variables, cacheConfig): SubscribeFunction {
+  // Note: https://github.com/facebook/relay/issues/2869#issuecomment-534905537
   const subscribeObservable = subscriptionClient.request({
     query: request.text,
     operationName: request.name,
