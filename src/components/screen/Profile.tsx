@@ -3,7 +3,6 @@ import { graphql, preloadQuery, usePreloadedQuery } from 'react-relay/hooks';
 import type { ProfileUserQuery } from './__generated__/ProfileUserQuery.graphql';
 import RelayEnvironment from '../../relay/RelayEnvironment';
 import { RootStackNavigationProps } from '../navigation/RootStackNavigator';
-import { User } from '../../types';
 import styled from 'styled-components/native';
 import { useAppContext } from '../../providers/AppProvider';
 
@@ -21,7 +20,7 @@ const StyledText = styled.Text`
 `;
 
 interface Props {
-  navigation: RootStackNavigationProps<'default'>;
+  navigation: RootStackNavigationProps<'Profile'>;
 }
 
 // Define a query
@@ -34,7 +33,7 @@ const UserQuery = graphql`
   }
 `;
 
-const Profile: FC = (props: any) => {
+const Profile: FC = (props: any): React.ReactElement => {
   const {
     state: { user },
   } = useAppContext();
@@ -46,8 +45,6 @@ const Profile: FC = (props: any) => {
     { fetchPolicy: 'store-or-network' },
   );
   const data = usePreloadedQuery<ProfileUserQuery>(UserQuery, result);
-
-  console.log('Profile', data);
   return (
     <Container>
       <React.Suspense fallback={'Profile fallback...'}>
