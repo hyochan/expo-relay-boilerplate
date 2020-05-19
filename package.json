@@ -41,8 +41,10 @@
     "react-native-webview": "8.1.1",
     "react-navigation-stack": "^2.3.10",
     "react-relay": "^0.0.0-experimental-895a6fe0",
+    "relay-hooks": "^3.4.0",
     "sentry-expo": "^2.0.4",
-    "styled-components": "^5.1.0"
+    "styled-components": "^5.1.0",
+    "subscriptions-transport-ws": "^0.9.16"
   },
   "devDependencies": {
     "@babel/cli": "^7.8.4",
