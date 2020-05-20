@@ -1,13 +1,8 @@
-import {
-  GraphQLSubscriptionConfig,
-  OperationType,
-  RecordSourceSelectorProxy,
-  SelectorData,
-  SelectorStoreUpdater,
-} from 'relay-runtime';
 import Button from '../shared/Button';
 import { IC_MASK } from '../../utils/Icons';
+import type { IntroUserSubscriptionResponse } from './__generated__/IntroUserSubscription.graphql';
 import React from 'react';
+import { RecordSourceSelectorProxy } from 'relay-runtime';
 import { RootStackNavigationProps } from '../navigation/RootStackNavigator';
 import { View } from 'react-native';
 import { getString } from '../../../STRINGS';
@@ -100,14 +95,7 @@ function Intro(props: Props): React.ReactElement {
       password,
     },
     onCompleted: (response): void => {
-      const res = response.signInEmail;
-      console.log('Login!', response);
-      setUser({
-        id: res.user.id,
-        token: res.token,
-        email: '',
-      });
-      // props.navigation.navigate('Profile');
+      console.log('Mutatiion successed!', response);
     },
     onError: (error): void => {
       console.error(error);
@@ -122,11 +110,16 @@ function Intro(props: Props): React.ReactElement {
       onCompleted: (): void => console.log('Subscription is now closed.'),
       updater: (
         store: RecordSourceSelectorProxy<{}>,
-        data: SelectorData,
+        data: IntroUserSubscriptionResponse,
       ): void => {
-        const payload = store.getRootField('userSignedIn');
-        const email = payload?.getValue('email');
-        console.log('useSubscription', email);
+        if (data.userSignedIn?.id && data.userSignedIn?.email) {
+          setUser({
+            id: data.userSignedIn.id,
+            email: data.userSignedIn.email,
+            token: '',
+          });
+          props.navigation.navigate('Profile');
+        }
       },
     }),
     [],

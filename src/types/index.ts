@@ -4,8 +4,8 @@ import { SFC } from 'react';
 
 export interface User {
   id: string;
-  email: string;
-  token: string;
+  email?: string;
+  token?: string;
 }
 
 interface IconProps {
