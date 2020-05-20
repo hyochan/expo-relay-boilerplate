@@ -6,7 +6,7 @@ import {
   requestSubscription,
 } from 'react-relay';
 import { RecordSourceSelectorProxy, SelectorData } from 'relay-runtime';
-import environment from '../relay/RelayEnvironment';
+import environment from '../RelayEnvironment';
 
 const UserSubscription: GraphQLTaggedNode = graphql`
   subscription UserSubscription {
