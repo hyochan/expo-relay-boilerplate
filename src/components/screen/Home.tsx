@@ -25,40 +25,13 @@ const Container = styled.View`
   overflow: hidden;
 `;
 
-const ButtonWrapper = styled.View`
-  position: absolute;
-  flex-direction: column;
-  bottom: 40px;
-  width: 85%;
-  align-self: center;
-`;
-
-const StyledTextInput = styled.TextInput`
-  width: 320px;
-  height: 40px;
-  align-self: center;
-  border-width: 1.3px;
-  border-color: lightgray;
-  border-radius: 3px;
-  padding: 10px;
-  margin-bottom: 5px;
-  color: ${({ theme }): string => theme.fontColor};
-`;
-
-const ErrorMessage = styled.Text`
-  color: #f57b51;
-  width: 320px;
-  align-self: center;
-  margin-bottom: 10px;
-`;
-
 interface Props {
-  navigation: RootStackNavigationProps<'Intro'>;
+  navigation: RootStackNavigationProps<'Main'>;
 }
 
 // Define a mutation query
 const SignInEmailMutation = graphql`
-  mutation IntroSignInEmailMutation($email: String!, $password: String!) {
+  mutation HomeSignInEmailMutation($email: String!, $password: String!) {
     signInEmail(email: $email, password: $password) {
       token
       user {
@@ -69,7 +42,7 @@ const SignInEmailMutation = graphql`
 `;
 
 const UserSubscription = graphql`
-  subscription IntroUserSubscription {
+  subscription HomeUserSubscription {
     userSignedIn {
       id
       email
@@ -78,7 +51,7 @@ const UserSubscription = graphql`
 `;
 // UserSubscription();
 
-function Intro(props: Props): React.ReactElement {
+function Home(props: Props): React.ReactElement {
   const { setUser } = useAppContext();
   const { changeThemeType } = useThemeContext();
   const [email, setEmail] = React.useState<string>('ethan1@test.com');
@@ -118,7 +91,7 @@ function Intro(props: Props): React.ReactElement {
             email: data.userSignedIn.email,
             token: '',
           });
-          props.navigation.navigate('Profile');
+          // props.navigation.navigate('Profile');
         }
       },
     }),
@@ -136,52 +109,11 @@ function Intro(props: Props): React.ReactElement {
 
   return (
     <Container>
-      <React.Suspense fallback={'Intro fallback...'}>
-        <ButtonWrapper>
-          <StyledTextInput
-            value={email}
-            onChangeText={(value: string): void => setEmail(value)}
-            textContentType="emailAddress"
-            placeholder="email"
-          />
-          <StyledTextInput
-            value={password}
-            onChangeText={(value: string): void => setPassword(value)}
-            textContentType="password"
-            secureTextEntry={true}
-            placeholder="Password"
-          />
-          {error.length > 0 && (
-            <ErrorMessage numberOfLines={1}>{error}</ErrorMessage>
-          )}
-
-          <Button
-            testID="btn-login"
-            imgLeftSrc={IC_MASK}
-            isLoading={isInFlight}
-            onClick={handleSignIn}
-            text={getString('LOGIN')}
-          />
-          <View style={{ marginTop: 8 }} />
-          <Button
-            testID="btn-navigate"
-            onClick={(): void =>
-              props.navigation.navigate('Temp', {
-                param: 'GO BACK',
-              })
-            }
-            text={getString('NAVIGATE', { name: 'Temp' })}
-          />
-          <View style={{ marginTop: 8 }} />
-          <Button
-            testID="btn-theme"
-            onClick={(): void => changeThemeType()}
-            text={getString('CHANGE_THEME')}
-          />
-        </ButtonWrapper>
+      <React.Suspense fallback={'Home fallback...'}>
+        Home
       </React.Suspense>
     </Container>
   );
 }
 
-export default Intro;
+export default Home;

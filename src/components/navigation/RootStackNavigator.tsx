@@ -1,18 +1,21 @@
-import { StackNavigationProp, createStackNavigator } from '@react-navigation/stack';
-import { ThemeType, useThemeContext } from '../../providers/ThemeProvider';
+import {
+  StackNavigationProp,
+  createStackNavigator,
+} from '@react-navigation/stack';
 
-import Intro from '../screen/Intro';
+import AuthStack from '../screen/SignIn';
+import MainStack from './MainStackNavigator';
 import { NavigationContainer } from '@react-navigation/native';
-import Profile from '../screen/Profile';
 import React from 'react';
-import Temp from '../screen/Temp';
+import styled from 'styled-components/native';
+import { useAppContext } from '../../providers/AppProvider';
+import { useThemeContext } from '../../providers/ThemeProvider';
 
 export type RootStackParamList = {
   default: undefined;
-  Intro: undefined;
-  Profile: undefined;
-  Temp: { param: string };
-}
+  Main: undefined;
+  Auth: undefined;
+};
 
 export type RootStackNavigationProps<
   T extends keyof RootStackParamList = 'default'
@@ -21,11 +24,12 @@ export type RootStackNavigationProps<
 const Stack = createStackNavigator<RootStackParamList>();
 
 function RootNavigator(): React.ReactElement {
-  const { theme, themeType } = useThemeContext();
+  const { theme } = useThemeContext();
+  const { state } = useAppContext();
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="Intro"
+        initialRouteName={state.user ? 'Main' : 'Auth'}
         screenOptions={{
           headerStyle: {
             backgroundColor: theme.background,
@@ -33,16 +37,26 @@ function RootNavigator(): React.ReactElement {
           headerTitleStyle: { color: theme.fontColor },
           headerTintColor: theme.tintColor,
         }}
-        headerMode={
-          themeType === ThemeType.DARK ? 'screen' : 'float'
-        }
+        headerMode="none"
       >
-        <Stack.Screen name="Intro" component={Intro} />
-        <Stack.Screen name="Profile" component={Profile} />
-        <Stack.Screen name="Temp" component={Temp} />
+        {state.user ? (
+          <Stack.Screen name="Main" component={MainStack} />
+        ) : (
+          <Stack.Screen name="Auth" component={AuthStack} />
+        )}
       </Stack.Navigator>
     </NavigationContainer>
   );
+}
+
+const Container = styled.View`
+  background: #000;
+  width: 20px;
+  height: 20px;
+`;
+
+function Widget(props): React.ReactElement {
+  return <Container />;
 }
 
 export default RootNavigator;
