@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-community/async-storage';
 import Button from '../shared/Button';
 import React from 'react';
 import { RootStackNavigationProps } from '../navigation/RootStackNavigator';
@@ -73,10 +74,13 @@ function SignIn(props: Props): React.ReactElement {
     onCompleted: (response: SignInEmailMutationResponse): void => {
       console.log('Mutatiion successed!', response);
       const { token, user } = response.signInEmail;
-      setUser({
-        id: user.id,
-        token,
-      });
+      AsyncStorage.setItem('@UserStorage:login_token', token)
+        .then((res) => {
+          setUser({
+            id: user.id,
+          });
+        })
+        .catch((e) => console.error(e));
     },
     onError: (error): void => {
       console.error(error);

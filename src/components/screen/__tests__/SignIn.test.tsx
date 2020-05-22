@@ -9,7 +9,7 @@ import {
 } from '@testing-library/react-native';
 import { createTestElement, createTestProps } from '../../../../test/testUtils';
 
-import Temp from '../Temp';
+import SignIn from '../SignIn';
 import { ThemeType } from '../../../providers/ThemeProvider';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -17,7 +17,7 @@ let props: any;
 let component: ReactElement;
 let testingLib: RenderResult;
 
-describe('[Temp] render', () => {
+describe('[SignIn] render', () => {
   props = createTestProps({
     route: {
       params: {
@@ -25,7 +25,7 @@ describe('[Temp] render', () => {
       },
     },
   });
-  component = createTestElement(<Temp {...props} />);
+  component = createTestElement(<SignIn {...props} />);
 
   it('renders without crashing', () => {
     testingLib = render(component);
@@ -42,7 +42,7 @@ describe('[Temp] render', () => {
         },
       },
     });
-    component = createTestElement(<Temp {...props} />, ThemeType.DARK);
+    component = createTestElement(<SignIn {...props} />, ThemeType.DARK);
     testingLib = render(component);
     const { baseElement } = testingLib;
     expect(baseElement).toMatchSnapshot();
@@ -50,7 +50,7 @@ describe('[Temp] render', () => {
   });
 });
 
-describe('[Temp] Interaction', () => {
+describe('[SignIn] Interaction', () => {
   let renderResult: RenderResult;
 
   beforeEach(() => {

@@ -1,20 +1,24 @@
 import 'react-native';
 
-import React, { ReactElement } from 'react';
-import { RenderResult, render } from '@testing-library/react-native';
+import * as React from 'react';
+
+import {
+  RenderResult,
+  render,
+} from '@testing-library/react-native';
 import { createTestElement, createTestProps } from '../../../../test/testUtils';
 
-import Screen from '../Profile';
+import Shared from '../Avatar';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let props: any;
-let component: ReactElement;
+let component: React.ReactElement;
 let testingLib: RenderResult;
 
 describe('Rendering', () => {
   beforeEach(() => {
     props = createTestProps();
-    component = createTestElement(<Screen {...props} />);
+    component = createTestElement(<Shared {...props} />);
     testingLib = render(component);
   });
 
@@ -27,8 +31,6 @@ describe('Rendering', () => {
 
 describe('Interaction', () => {
   beforeEach(() => {
-    props = createTestProps();
-    component = createTestElement(<Screen {...props} />);
     testingLib = render(component);
   });
 
@@ -36,7 +38,6 @@ describe('Interaction', () => {
     expect(testingLib.baseElement).toMatchSnapshot();
     // const btn = testingLib.queryByTestId('btn');
     // act(() => {
-    //   fireEvent.press(btn);
     //   fireEvent.press(btn);
     // });
     // expect(cnt).toBe(3);

@@ -6,20 +6,23 @@ function fetchGraphQL(
   request,
   variables,
   cacheConfig,
+  token,
 ): Promise<GraphQLResponse> {
   console.log(
     `fetching query ${request.name} with ${JSON.stringify(variables)}`,
   );
-  return fetch(FETCH_URL, {
+  const fetchConfig = {
     method: 'POST',
     headers: {
+      Authorization: token || '',
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
       query: request.text,
       variables,
     }),
-  }).then((response) => response.json());
+  };
+  return fetch(FETCH_URL, fetchConfig).then((response) => response.json());
 }
 
 export default fetchGraphQL;

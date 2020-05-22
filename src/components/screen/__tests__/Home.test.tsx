@@ -1,9 +1,14 @@
 import React, { ReactElement } from 'react';
-import { RenderResult, act, fireEvent, render } from '@testing-library/react-native';
+import {
+  RenderResult,
+  act,
+  fireEvent,
+  render,
+} from '@testing-library/react-native';
 import { createTestElement, createTestProps } from '../../../../test/testUtils';
 
 import Button from '../../shared/Button';
-import Intro from '../Intro';
+import Home from '../Home';
 import { ThemeType } from '../../../providers/ThemeProvider';
 import renderer from 'react-test-renderer';
 
@@ -12,10 +17,10 @@ let props: any;
 let component: ReactElement;
 let testingLib: RenderResult;
 
-describe('[Intro] screen rendering test', () => {
+describe('[Home] screen rendering test', () => {
   beforeEach(() => {
     props = createTestProps();
-    component = createTestElement(<Intro {...props} />);
+    component = createTestElement(<Home {...props} />);
     testingLib = render(component);
   });
 
@@ -26,7 +31,7 @@ describe('[Intro] screen rendering test', () => {
   });
 
   it('should render [Dark] theme', () => {
-    component = createTestElement(<Intro {...props} />, ThemeType.DARK);
+    component = createTestElement(<Home {...props} />, ThemeType.DARK);
     testingLib = render(component);
     const { baseElement } = testingLib;
     expect(baseElement).toMatchSnapshot();
@@ -37,7 +42,7 @@ describe('[Intro] screen rendering test', () => {
     props = createTestProps({
       isLoading: true,
     });
-    component = createTestElement(<Intro {...props} />, ThemeType.DARK);
+    component = createTestElement(<Home {...props} />, ThemeType.DARK);
     testingLib = render(component);
     const { baseElement } = testingLib;
     expect(baseElement).toMatchSnapshot();
@@ -48,7 +53,7 @@ describe('[Intro] screen rendering test', () => {
     props = createTestProps({
       isDisabled: true,
     });
-    component = createTestElement(<Intro {...props} />, ThemeType.DARK);
+    component = createTestElement(<Home {...props} />, ThemeType.DARK);
     testingLib = render(component);
     const { baseElement } = testingLib;
     expect(baseElement).toMatchSnapshot();
@@ -56,7 +61,7 @@ describe('[Intro] screen rendering test', () => {
   });
 });
 
-describe('[Intro] Interaction', () => {
+describe('[Home] Interaction', () => {
   let testingLib: RenderResult;
   let rendered: renderer.ReactTestRenderer;
   let root: renderer.ReactTestInstance;

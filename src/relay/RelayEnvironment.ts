@@ -9,6 +9,7 @@ import {
   SubscribeFunction,
   Variables,
 } from 'relay-runtime';
+import AsyncStorage from '@react-native-community/async-storage';
 import fetchGraphQL from './fetchGraphQL';
 import subscribeGraphQL from './subscribeGraphQL';
 
@@ -17,7 +18,9 @@ function fetchFunction(
   variables: Variables,
   cacheConfig: CacheConfig,
 ): Promise<GraphQLResponse> {
-  return fetchGraphQL(request, variables, cacheConfig);
+  return AsyncStorage.getItem('@UserStorage:login_token').then((token) => {
+    return fetchGraphQL(request, variables, cacheConfig, token);
+  });
 }
 
 const subscribeFunction = (

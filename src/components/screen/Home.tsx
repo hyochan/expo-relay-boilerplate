@@ -1,19 +1,24 @@
-import Button from '../shared/Button';
-import { IC_MASK } from '../../utils/Icons';
-import type { IntroUserSubscriptionResponse } from './__generated__/IntroUserSubscription.graphql';
+import { Animated, Text } from 'react-native';
+import type {
+  HomeFriendQuery,
+  HomeFriendQueryResponse,
+} from './__generated__/HomeFriendQuery.graphql';
+import {
+  preloadQuery,
+  usePreloadedQuery,
+  useSubscription,
+} from 'react-relay/hooks';
+import Friends from '../ui/Friends';
+import type { HomeUserSubscriptionResponse } from './__generated__/HomeUserSubscription.graphql';
 import React from 'react';
 import { RecordSourceSelectorProxy } from 'relay-runtime';
 import { RootStackNavigationProps } from '../navigation/RootStackNavigator';
-import { View } from 'react-native';
-import { getString } from '../../../STRINGS';
+import environment from '../../relay/RelayEnvironment';
 import graphql from 'babel-plugin-relay/macro';
 import styled from 'styled-components/native';
-import { useAppContext } from '../../providers/AppProvider';
-import { useMutation } from 'react-relay/hooks';
-import { useSubscription } from 'relay-hooks';
-import { useThemeContext } from '../../providers/ThemeProvider';
 
 const Container = styled.View`
+  position: relative;
   flex: 1;
   align-self: stretch;
   overflow: scroll;
@@ -29,14 +34,13 @@ interface Props {
   navigation: RootStackNavigationProps<'Main'>;
 }
 
-// Define a mutation query
-const SignInEmailMutation = graphql`
-  mutation HomeSignInEmailMutation($email: String!, $password: String!) {
-    signInEmail(email: $email, password: $password) {
-      token
-      user {
-        id
-      }
+const FriendQuery = graphql`
+  query HomeFriendQuery {
+    friends {
+      id
+      email
+      name
+      photoURL
     }
   }
 `;
@@ -49,68 +53,83 @@ const UserSubscription = graphql`
     }
   }
 `;
-// UserSubscription();
 
 function Home(props: Props): React.ReactElement {
-  const { setUser } = useAppContext();
-  const { changeThemeType } = useThemeContext();
-  const [email, setEmail] = React.useState<string>('ethan1@test.com');
-  const [password, setPassword] = React.useState<string>('test');
-  const [error, setError] = React.useState<string>('');
+  const [signin, setSignin] = React.useState<boolean>(false);
+  const fadeAnim = React.useRef(new Animated.Value(0)).current;
 
-  // isInFlight will be true if any mutation triggered by calling commit is still in flight.
-  // commit is a function that accepts a UseMutationConfig. The type of UseMutationConfig is as follows:
-  const [commit, isInFlight] = useMutation(SignInEmailMutation);
+  const result = preloadQuery(
+    environment,
+    FriendQuery,
+    {},
+    { fetchPolicy: 'store-or-network' },
+  );
 
-  const mutationConfig = {
-    variables: {
-      email,
-      password,
-    },
-    onCompleted: (response): void => {
-      console.log('Mutatiion successed!', response);
-    },
-    onError: (error): void => {
-      console.error(error);
-      setError('Check your email and password');
-    },
-  };
+  const data: HomeFriendQueryResponse = usePreloadedQuery<HomeFriendQuery>(
+    FriendQuery,
+    result,
+  );
 
+  // Subscription
   const subscriptionConfig = React.useMemo(
     () => ({
       variables: {},
       subscription: UserSubscription,
-      onCompleted: (): void => console.log('Subscription is now closed.'),
+      onCompleted: (): void =>
+        console.log('[Home] subscription is now closed.'),
       updater: (
         store: RecordSourceSelectorProxy<{}>,
-        data: IntroUserSubscriptionResponse,
+        data: HomeUserSubscriptionResponse,
       ): void => {
-        if (data.userSignedIn?.id && data.userSignedIn?.email) {
-          setUser({
-            id: data.userSignedIn.id,
-            email: data.userSignedIn.email,
-            token: '',
-          });
-          // props.navigation.navigate('Profile');
+        if (data) {
+          setSignin(true);
         }
       },
     }),
     [],
   );
 
-  // Create a subscription when the component is mounted with the given config
-  // Unsubscribe from that subscription when the component is unmounted
   useSubscription(subscriptionConfig);
 
-  const handleSignIn = (): void => {
-    setError('');
-    commit(mutationConfig);
-  };
+  React.useEffect((): void => {
+    const fadeIn = (): void => {
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 500,
+        useNativeDriver: true,
+      }).start(() => {
+        setTimeout(() => setSignin(false), 2000);
+      });
+    };
+
+    const fadeOut = (): void => {
+      Animated.timing(fadeAnim, {
+        toValue: 0,
+        duration: 500,
+        useNativeDriver: true,
+      }).start();
+    };
+
+    signin ? fadeIn() : fadeOut();
+  }, [signin]);
 
   return (
     <Container>
       <React.Suspense fallback={'Home fallback...'}>
-        Home
+        <Friends data={data} />
+        {/* <AlertContainer signin={signin} /> */}
+        <Animated.View
+          style={{
+            position: 'absolute',
+            top: 5,
+            paddingVertical: 8,
+            paddingHorizontal: 16,
+            backgroundColor: '#00FACB',
+            opacity: fadeAnim,
+          }}
+        >
+          <Text>A new device has signed in</Text>
+        </Animated.View>
       </React.Suspense>
     </Container>
   );
