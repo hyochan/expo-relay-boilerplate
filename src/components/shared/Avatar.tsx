@@ -2,12 +2,18 @@ import React, { FC } from 'react';
 
 import styled from 'styled-components/native';
 
+interface Props {
+  photoURL: string | undefined | null;
+  onPress?: () => void | null;
+}
+
 const Container = styled.TouchableOpacity`
   width: 50px;
   height: 50px;
   border-radius: 50%;
   margin-left: 5px;
   margin-right: 5px;
+  cursor: ${(props: Props): string => (props.onPress ? 'pointer' : 'initial')};
 `;
 const StyledImage = styled.Image`
   width: 100%;
@@ -15,13 +21,16 @@ const StyledImage = styled.Image`
   border-radius: 50%;
 `;
 
-export default function Avatar({ photoURL }): React.ReactElement {
+export default function Avatar(props: Props): React.ReactElement {
   return (
-    <Container activeOpacity={0.8}>
+    <Container
+      activeOpacity={props.onPress ? 0.8 : 1}
+      onPress={props.onPress ? props.onPress : null}
+    >
       <StyledImage
         source={{
           uri:
-            photoURL ||
+            props.photoURL ||
             'https://avatars2.githubusercontent.com/u/45788556?s=200&v=4',
         }}
       />

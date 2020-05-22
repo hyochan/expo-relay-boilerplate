@@ -117,7 +117,6 @@ function Home(props: Props): React.ReactElement {
     <Container>
       <React.Suspense fallback={'Home fallback...'}>
         <Friends data={data} />
-        {/* <AlertContainer signin={signin} /> */}
         <Animated.View
           style={{
             position: 'absolute',
