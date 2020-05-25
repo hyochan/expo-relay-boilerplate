@@ -12,6 +12,7 @@ const Container = styled.View`
 `;
 
 const HeaderTitle = styled.Text`
+  color: ${({ theme }): string => theme.fontColor};
   font-size: 25px;
   font-weight: 600;
   padding-top: 15px;
@@ -21,7 +22,7 @@ const HeaderTitle = styled.Text`
 const StyledList = styled.View``;
 
 const StyledMessage = styled.Text`
-  color: #f57b51;
+  color: ${({ theme }): string => theme.tintColor};
   width: 320px;
   height: 20px;
   text-align: center;

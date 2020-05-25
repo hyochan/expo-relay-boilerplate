@@ -1,6 +1,7 @@
 import {
   DrawerContentComponentProps,
   DrawerContentScrollView,
+  DrawerItem,
   DrawerItemList,
   DrawerNavigationProp,
   createDrawerNavigator,
@@ -8,6 +9,9 @@ import {
 import React, { ReactElement } from 'react';
 import Home from '../screen/Home';
 import Temp from '../screen/Temp';
+import styled from 'styled-components/native';
+import { useAppContext } from '../../providers/AppProvider';
+import { useThemeContext } from '../../providers/ThemeProvider';
 
 export type DrawerParamList = {
   default: undefined;
@@ -22,14 +26,31 @@ export type DrawerNavigationProps<
 const Drawer = createDrawerNavigator<DrawerParamList>();
 
 function CustomDrawerContent(props): ReactElement {
+  const { changeThemeType, theme } = useThemeContext();
+  const { resetUser } = useAppContext();
   return (
     <DrawerContentScrollView {...props}>
       <DrawerItemList {...props} />
+      <DrawerItem
+        label="Change theme"
+        onPress={changeThemeType}
+        style={{
+          backgroundColor: theme.btnPrimary,
+        }}
+      />
+      <DrawerItem
+        label="Sign out"
+        onPress={resetUser}
+        style={{
+          backgroundColor: theme.btnPrimary,
+        }}
+      />
     </DrawerContentScrollView>
   );
 }
 
 function MainStackNavigator(): ReactElement {
+  const { theme } = useThemeContext();
   return (
     <Drawer.Navigator
       initialRouteName="Home"
@@ -37,7 +58,7 @@ function MainStackNavigator(): ReactElement {
       drawerContent={(props: DrawerContentComponentProps): ReactElement => (
         <CustomDrawerContent {...props} />
       )}
-      drawerStyle={{}}
+      drawerStyle={{ backgroundColor: theme.background }}
       overlayColor="transparent"
     >
       <Drawer.Screen name="Home" component={Home} />

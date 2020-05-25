@@ -37,7 +37,7 @@ const Menu = styled.Text`
 const Header = (props: Props): ReactElement => {
   return (
     <Container>
-      <MenuContainer onPress={(): void => props.navigation.openDrawer()}>
+      <MenuContainer onPress={(): void => props.navigation.toggleDrawer()}>
         <Menu>Menu</Menu>
       </MenuContainer>
       <HeaderRightWidget />
