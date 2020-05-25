@@ -3,11 +3,10 @@ import {
   createStackNavigator,
 } from '@react-navigation/stack';
 
-import AuthStack from '../screen/SignIn';
 import MainStack from './MainStackNavigator';
 import { NavigationContainer } from '@react-navigation/native';
 import React from 'react';
-import styled from 'styled-components/native';
+import SignIn from '../screen/SignIn';
 import { useAppContext } from '../../providers/AppProvider';
 import { useThemeContext } from '../../providers/ThemeProvider';
 
@@ -42,21 +41,11 @@ function RootNavigator(): React.ReactElement {
         {state.user ? (
           <Stack.Screen name="Main" component={MainStack} />
         ) : (
-          <Stack.Screen name="Auth" component={AuthStack} />
+          <Stack.Screen name="Auth" component={SignIn} />
         )}
       </Stack.Navigator>
     </NavigationContainer>
   );
-}
-
-const Container = styled.View`
-  background: #000;
-  width: 20px;
-  height: 20px;
-`;
-
-function Widget(props): React.ReactElement {
-  return <Container />;
 }
 
 export default RootNavigator;

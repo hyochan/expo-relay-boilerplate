@@ -1,46 +1,48 @@
 import {
-  StackNavigationProp,
-  createStackNavigator,
-} from '@react-navigation/stack';
-import { ThemeType, useThemeContext } from '../../providers/ThemeProvider';
-import HeaderRightWidget from '../shared/HeaderRightWidget';
+  DrawerContentComponentProps,
+  DrawerContentScrollView,
+  DrawerItemList,
+  DrawerNavigationProp,
+  createDrawerNavigator,
+} from '@react-navigation/drawer';
+import React, { ReactElement } from 'react';
 import Home from '../screen/Home';
-import React from 'react';
+import Temp from '../screen/Temp';
 
-export type MainStackParamList = {
+export type DrawerParamList = {
   default: undefined;
   Home: undefined;
+  Temp: undefined;
 };
 
-export type RootStackNavigationProps<
-  T extends keyof MainStackParamList = 'default'
-> = StackNavigationProp<MainStackParamList, T>;
+export type DrawerNavigationProps<
+  T extends keyof DrawerParamList = 'default'
+> = DrawerNavigationProp<DrawerParamList, T>;
 
-const Stack = createStackNavigator<MainStackParamList>();
+const Drawer = createDrawerNavigator<DrawerParamList>();
 
-function MainStackNavigator(): React.ReactElement {
-  const { theme, themeType } = useThemeContext();
-
+function CustomDrawerContent(props): ReactElement {
   return (
-    <Stack.Navigator
-      initialRouteName={'Home'}
-      screenOptions={{
-        headerStyle: {
-          backgroundColor: theme.background,
-        },
-        headerTitleStyle: { color: theme.fontColor },
-        headerTintColor: theme.tintColor,
-      }}
-      headerMode={themeType === ThemeType.DARK ? 'screen' : 'float'}
+    <DrawerContentScrollView {...props}>
+      <DrawerItemList {...props} />
+    </DrawerContentScrollView>
+  );
+}
+
+function MainStackNavigator(): ReactElement {
+  return (
+    <Drawer.Navigator
+      initialRouteName="Home"
+      drawerType="permanent"
+      drawerContent={(props: DrawerContentComponentProps): ReactElement => (
+        <CustomDrawerContent {...props} />
+      )}
+      drawerStyle={{}}
+      overlayColor="transparent"
     >
-      <Stack.Screen
-        name="Home"
-        component={Home}
-        options={{
-          headerRight: (): React.ReactElement => <HeaderRightWidget />,
-        }}
-      />
-    </Stack.Navigator>
+      <Drawer.Screen name="Home" component={Home} />
+      <Drawer.Screen name="Temp" component={Temp} />
+    </Drawer.Navigator>
   );
 }
 

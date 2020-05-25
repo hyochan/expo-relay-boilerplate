@@ -8,11 +8,12 @@ import {
   usePreloadedQuery,
   useSubscription,
 } from 'react-relay/hooks';
+import { DrawerNavigationProps } from '../navigation/HomeStackNavigator';
 import Friends from '../ui/Friends';
+import Header from '../shared/Header';
 import type { HomeUserSubscriptionResponse } from './__generated__/HomeUserSubscription.graphql';
 import React from 'react';
 import { RecordSourceSelectorProxy } from 'relay-runtime';
-import { RootStackNavigationProps } from '../navigation/RootStackNavigator';
 import environment from '../../relay/RelayEnvironment';
 import graphql from 'babel-plugin-relay/macro';
 import styled from 'styled-components/native';
@@ -31,7 +32,7 @@ const Container = styled.View`
 `;
 
 interface Props {
-  navigation: RootStackNavigationProps<'Main'>;
+  navigation: DrawerNavigationProps<'Home'>;
 }
 
 const FriendQuery = graphql`
@@ -116,6 +117,7 @@ function Home(props: Props): React.ReactElement {
   return (
     <Container>
       <React.Suspense fallback={'Home fallback...'}>
+        <Header {...props}/>
         <Friends data={data} />
         <Animated.View
           style={{

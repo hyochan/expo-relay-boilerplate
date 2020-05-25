@@ -16,9 +16,11 @@ const HeaderRightContainer = styled.View`
   align-items: center;
   justify-content: center;
   flex-direction: row;
+  background-color: transparent;
 `;
 const StyledText = styled.Text`
   padding-left: 5px;
+  color: ${({ theme }): string => theme.fontColor};
 `;
 
 const UserQuery = graphql`
