@@ -1,12 +1,22 @@
 import { AppLoading, Asset } from 'expo';
-import React, { useState } from 'react';
+import type {
+  AppUserQuery,
+  AppUserQueryResponse,
+} from './__generated__/AppUserQuery.graphql';
+import React, { useEffect, useState } from 'react';
 
+import {
+  RelayEnvironmentProvider,
+  graphql,
+  preloadQuery,
+  usePreloadedQuery,
+} from 'react-relay/hooks';
 import Icons from './utils/Icons';
 import { Image } from 'react-native';
 import RelayEnvironment from './relay/RelayEnvironment';
-import { RelayEnvironmentProvider } from 'react-relay/hooks';
 import RootNavigator from './components/navigation/RootStackNavigator';
 import RootProvider from './providers';
+import { useAppContext } from './providers/AppProvider';
 
 function cacheImages(images: Image[]): Image[] {
   return images.map((image: Image) => {
@@ -23,7 +33,40 @@ const loadAssetsAsync = async (): Promise<void> => {
   await Promise.all([...imageAssets]);
 };
 
+const UserQuery = graphql`
+  query AppUserQuery {
+    me {
+      id
+      email
+      name
+      photoURL
+    }
+  }
+`;
+
+const userFetchResult = preloadQuery(
+  RelayEnvironment,
+  UserQuery,
+  {},
+  { fetchPolicy: 'store-or-network' },
+);
+
 function App(): React.ReactElement {
+  const userData: AppUserQueryResponse = usePreloadedQuery<AppUserQuery>(
+    UserQuery,
+    userFetchResult,
+  );
+
+  const { setUser } = useAppContext();
+
+  useEffect(() => {
+    if (userData.me) {
+      setUser({
+        ...userData.me,
+      });
+    }
+  }, [userData.me]);
+
   return <RootNavigator />;
 }
 

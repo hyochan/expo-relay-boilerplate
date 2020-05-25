@@ -43,7 +43,7 @@ const ErrorMessage = styled.Text`
 `;
 
 interface Props {
-  navigation: RootStackNavigationProps<'SignIn'>;
+  navigation: RootStackNavigationProps<'Auth'>;
 }
 
 // Define a mutation query
@@ -53,6 +53,9 @@ const SignInEmailMutation = graphql`
       token
       user {
         id
+        email
+        name
+        photoURL
       }
     }
   }
@@ -77,7 +80,7 @@ function SignIn(props: Props): React.ReactElement {
       AsyncStorage.setItem('@UserStorage:login_token', token)
         .then((res) => {
           setUser({
-            id: user.id,
+            ...user,
           });
         })
         .catch((e) => console.error(e));

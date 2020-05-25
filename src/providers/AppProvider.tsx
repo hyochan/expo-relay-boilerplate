@@ -1,5 +1,6 @@
 import React, { useReducer } from 'react';
 
+import { AsyncStorage } from 'react-native';
 import { User } from '../types';
 import createCtx from '../utils/createCtx';
 
@@ -62,8 +63,10 @@ const setUser = (dispatch: React.Dispatch<SetUserAction>) => (
 };
 
 const resetUser = (dispatch: React.Dispatch<ResetUserAction>) => (): void => {
-  dispatch({
-    type: ActionType.ResetUser,
+  AsyncStorage.removeItem('@UserStorage:login_token').then(() => {
+    dispatch({
+      type: ActionType.ResetUser,
+    });
   });
 };
 

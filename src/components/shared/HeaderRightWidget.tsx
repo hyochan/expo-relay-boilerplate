@@ -8,6 +8,7 @@ import React from 'react';
 import environment from '../../relay/RelayEnvironment';
 
 import styled from 'styled-components/native';
+import { useAppContext } from '../../providers/AppProvider';
 
 const HeaderRightContainer = styled.View`
   width: 150px;
@@ -31,21 +32,30 @@ const UserQuery = graphql`
 `;
 
 function HeaderRightWidget(): React.ReactElement {
+  console.log('render HeaderRightWidget');
+  // const user = {};
+  const resetUser = () => null;
+  // const {
+  //   state: { user },
+  //   resetUser,
+  // } = useAppContext();
+
   const result = preloadQuery(
     environment,
     UserQuery,
     {},
-    { fetchPolicy: 'store-or-network' },
+    { fetchPolicy: 'network-only' },
   );
-  const data: HeaderRightWidgetUserQueryResponse = usePreloadedQuery<
+
+  const { me }: HeaderRightWidgetUserQueryResponse = usePreloadedQuery<
     HeaderRightWidgetUserQuery
   >(UserQuery, result);
 
   return (
     <HeaderRightContainer>
       <React.Suspense fallback={'loading...'}>
-        <Avatar photoURL={data.me?.photoURL} onPress={(): null => null} />
-        <StyledText>{data.me?.name}</StyledText>
+        <Avatar photoURL={me?.photoURL} onPress={resetUser} />
+        <StyledText>{me?.name}</StyledText>
       </React.Suspense>
     </HeaderRightContainer>
   );
