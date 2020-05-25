@@ -32,29 +32,26 @@ const UserQuery = graphql`
 `;
 
 function HeaderRightWidget(): React.ReactElement {
-  console.log('render HeaderRightWidget');
-  // const user = {};
-  const resetUser = () => null;
-  // const {
-  //   state: { user },
-  //   resetUser,
-  // } = useAppContext();
-
+  const { resetUser } = useAppContext();
   const result = preloadQuery(
     environment,
     UserQuery,
     {},
-    { fetchPolicy: 'network-only' },
+    { fetchPolicy: 'store-and-network' },
   );
 
   const { me }: HeaderRightWidgetUserQueryResponse = usePreloadedQuery<
     HeaderRightWidgetUserQuery
   >(UserQuery, result);
 
+  const handleSignOut = (): void => {
+    resetUser();
+  };
+
   return (
     <HeaderRightContainer>
       <React.Suspense fallback={'loading...'}>
-        <Avatar photoURL={me?.photoURL} onPress={resetUser} />
+        <Avatar photoURL={me?.photoURL} onPress={handleSignOut} />
         <StyledText>{me?.name}</StyledText>
       </React.Suspense>
     </HeaderRightContainer>
