@@ -54,7 +54,7 @@ function MainStackNavigator(): ReactElement {
   return (
     <Drawer.Navigator
       initialRouteName="Home"
-      drawerType="permanent"
+      drawerType="slide"
       drawerContent={(props: DrawerContentComponentProps): ReactElement => (
         <CustomDrawerContent {...props} />
       )}
