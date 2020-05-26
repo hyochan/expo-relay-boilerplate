@@ -1,16 +1,12 @@
 import {
   DrawerContentComponentProps,
-  DrawerContentScrollView,
-  DrawerItem,
-  DrawerItemList,
   DrawerNavigationProp,
   createDrawerNavigator,
 } from '@react-navigation/drawer';
 import React, { ReactElement } from 'react';
+import DrawerContent from '../shared/DrawerContent';
 import Home from '../screen/Home';
 import Temp from '../screen/Temp';
-import styled from 'styled-components/native';
-import { useAppContext } from '../../providers/AppProvider';
 import { useThemeContext } from '../../providers/ThemeProvider';
 
 export type DrawerParamList = {
@@ -25,40 +21,21 @@ export type DrawerNavigationProps<
 
 const Drawer = createDrawerNavigator<DrawerParamList>();
 
-function CustomDrawerContent(props): ReactElement {
-  const { changeThemeType, theme } = useThemeContext();
-  const { resetUser } = useAppContext();
-  return (
-    <DrawerContentScrollView {...props}>
-      <DrawerItemList {...props} />
-      <DrawerItem
-        label="Change theme"
-        onPress={changeThemeType}
-        style={{
-          backgroundColor: theme.btnPrimary,
-        }}
-      />
-      <DrawerItem
-        label="Sign out"
-        onPress={resetUser}
-        style={{
-          backgroundColor: theme.btnPrimary,
-        }}
-      />
-    </DrawerContentScrollView>
-  );
-}
-
 function MainStackNavigator(): ReactElement {
   const { theme } = useThemeContext();
+  const [isOpen, setOpen] = React.useState<boolean>(true);
   return (
     <Drawer.Navigator
       initialRouteName="Home"
       drawerType="permanent"
       drawerContent={(props: DrawerContentComponentProps): ReactElement => (
-        <CustomDrawerContent {...props} />
+        <DrawerContent {...props} isOpen={isOpen} setOpen={setOpen} />
       )}
-      drawerStyle={{ backgroundColor: theme.background }}
+      drawerStyle={{
+        backgroundColor: theme.background,
+        width: isOpen ? 320 : 60,
+        borderRightWidth: 0,
+      }}
       overlayColor="transparent"
     >
       <Drawer.Screen name="Home" component={Home} />

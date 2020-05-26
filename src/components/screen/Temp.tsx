@@ -6,7 +6,7 @@ import styled from 'styled-components/native';
 
 const Container = styled.View`
   flex: 1;
-  background-color: transparent;
+  background-color: ${({ theme }): string => theme.background};
   flex-direction: row;
   align-items: center;
   justify-content: center;

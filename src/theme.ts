@@ -12,7 +12,23 @@ export const colors = {
   darkBackgroundLight: '#393241',
 };
 
-export const light = {
+export type ColorProps = {
+  background: string;
+  btnPrimary: string;
+  btnPrimaryFont: string;
+  btnPrimaryLight: string;
+  btnPrimaryLightFont: string;
+  textDisabled: string;
+  btnDisabled: string;
+  fontColor: string;
+  tintColor: string;
+  activeColor: string;
+  inActiveColor: string;
+  activeTextColor: string;
+  inActiveTextColor: string;
+};
+
+export const light: ColorProps = {
   background: colors.lightBackground,
   btnPrimary: colors.skyBlue,
   btnPrimaryFont: 'white',
@@ -22,11 +38,15 @@ export const light = {
   btnDisabled: 'rgb(224,224,224)',
   fontColor: 'black',
   tintColor: '#333333',
+  activeColor: '#E4F0FF',
+  inActiveColor: colors.lightBackground,
+  activeTextColor: '#278DFF',
+  inActiveTextColor: colors.mediumGray,
 };
 
 export type Theme = typeof light;
 
-export const dark = {
+export const dark: ColorProps = {
   background: colors.darkBackground,
   btnPrimary: colors.skyBlue,
   btnPrimaryFont: 'white',
@@ -36,4 +56,8 @@ export const dark = {
   btnDisabled: 'rgb(224,224,224)',
   fontColor: 'white',
   tintColor: '#a3a3a3',
+  activeColor: 'black',
+  inActiveColor: colors.darkBackground,
+  activeTextColor: '#fff',
+  inActiveTextColor: 'darkgray',
 };
