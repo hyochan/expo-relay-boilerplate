@@ -1,13 +1,9 @@
+/* eslint-disable @typescript-eslint/camelcase */
 import React, { FC } from 'react';
+import { graphql, useFragment } from 'react-relay/hooks';
 import Avatar from './Avatar';
+import type { Friend_user$key } from './__generated__/Friend_user.graphql';
 import styled from 'styled-components/native';
-
-export type FriendProps = {
-  readonly id: string;
-  readonly email: string | null;
-  readonly name: string | null;
-  readonly photoURL: string | null;
-};
 
 const Container = styled.View`
   position: relative;
@@ -38,13 +34,29 @@ const Text = styled.Text`
   margin-left: 15px;
 `;
 
-const Friend: FC<FriendProps> = ({ id, email, name, photoURL }) => {
+export type Props = {
+  user: Friend_user$key;
+};
+
+const Friend: FC<any> = (props: Props) => {
   const [online, setOnline] = React.useState<boolean>(false);
+
+  const data = useFragment(
+    graphql`
+      fragment Friend_user on User {
+        id
+        email
+        name
+        photoURL
+      }
+    `,
+    props.user,
+  );
 
   return (
     <Container>
-      <Avatar photoURL={photoURL} />
-      <Text>{name}</Text>
+      <Avatar photoURL={data.photoURL} />
+      <Text>{data.name}</Text>
       <StatusDot online={online} />
     </Container>
   );

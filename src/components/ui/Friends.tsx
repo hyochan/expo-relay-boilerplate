@@ -40,7 +40,7 @@ const Friends: FC<FriendsProps> = ({ data }) => {
       <HeaderTitle>Friends list</HeaderTitle>
       <StyledList>
         {data.friends.length > 0 ? (
-          data.friends.map((friend) => <Friend key={friend.id} {...friend} />)
+          data.friends.map((friend) => <Friend key={friend.id} user={friend} />)
         ) : (
           <StyledMessage>Empty list</StyledMessage>
         )}

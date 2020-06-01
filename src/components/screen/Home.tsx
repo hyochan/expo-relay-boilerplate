@@ -6,15 +6,15 @@ import type {
 import {
   preloadQuery,
   usePreloadedQuery,
+  useRelayEnvironment,
   useSubscription,
 } from 'react-relay/hooks';
-import { DrawerNavigationProps } from '../navigation/HomeStackNavigator';
+import { DrawerNavigationProps } from '../navigation/MainStackNavigator';
 import Friends from '../ui/Friends';
 import Header from '../shared/Header';
 import type { HomeUserSubscriptionResponse } from './__generated__/HomeUserSubscription.graphql';
 import React from 'react';
 import { RecordSourceSelectorProxy } from 'relay-runtime';
-import environment from '../../relay/RelayEnvironment';
 import graphql from 'babel-plugin-relay/macro';
 import styled from 'styled-components/native';
 
@@ -38,10 +38,7 @@ interface Props {
 const FriendQuery = graphql`
   query HomeFriendQuery {
     friends {
-      id
-      email
-      name
-      photoURL
+      ...Friend_user
     }
   }
 `;
@@ -59,7 +56,9 @@ function Home(props: Props): React.ReactElement {
   const [signin, setSignin] = React.useState<boolean>(false);
   const fadeAnim = React.useRef(new Animated.Value(0)).current;
 
-  const result = preloadQuery(
+  const environment = useRelayEnvironment();
+
+  const result = preloadQuery<HomeFriendQuery>(
     environment,
     FriendQuery,
     {},
@@ -117,7 +116,7 @@ function Home(props: Props): React.ReactElement {
   return (
     <Container>
       <React.Suspense fallback={'Home fallback...'}>
-        <Header {...props}/>
+        <Header {...props} />
         <Friends data={data} />
         <Animated.View
           style={{

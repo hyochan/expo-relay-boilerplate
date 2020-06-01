@@ -1,14 +1,15 @@
-import type {
-  HeaderRightWidgetUserQuery,
-  HeaderRightWidgetUserQueryResponse,
-} from './__generated__/HeaderRightWidgetUserQuery.graphql';
-import { graphql, preloadQuery, usePreloadedQuery } from 'react-relay/hooks';
+/* eslint-disable @typescript-eslint/camelcase */
+import { graphql, useFragment } from 'react-relay/hooks';
 import Avatar from '../shared/Avatar';
+import type { HeaderRightWidget_user$key } from './__generated__/HeaderRightWidget_user.graphql';
 import React from 'react';
-import environment from '../../relay/RelayEnvironment';
 
 import styled from 'styled-components/native';
 import { useAppContext } from '../../providers/AppProvider';
+
+type Props = {
+  user: HeaderRightWidget_user$key;
+};
 
 const HeaderRightContainer = styled.View`
   width: 150px;
@@ -23,38 +24,29 @@ const StyledText = styled.Text`
   color: ${({ theme }): string => theme.fontColor};
 `;
 
-const UserQuery = graphql`
-  query HeaderRightWidgetUserQuery {
-    me {
-      id
-      name
-      photoURL
-    }
-  }
-`;
-
-function HeaderRightWidget(): React.ReactElement {
+function HeaderRightWidget(props: Props): React.ReactElement {
   const { resetUser } = useAppContext();
-  const result = preloadQuery(
-    environment,
-    UserQuery,
-    {},
-    { fetchPolicy: 'store-and-network' },
-  );
-
-  const { me }: HeaderRightWidgetUserQueryResponse = usePreloadedQuery<
-    HeaderRightWidgetUserQuery
-  >(UserQuery, result);
-
   const handleSignOut = (): void => {
     resetUser();
   };
 
+  const data = useFragment(
+    graphql`
+      fragment HeaderRightWidget_user on User {
+        id
+        email
+        name
+        photoURL
+      }
+    `,
+    props.user,
+  );
+
   return (
     <HeaderRightContainer>
       <React.Suspense fallback={'loading...'}>
-        <Avatar photoURL={me?.photoURL} onPress={handleSignOut} />
-        <StyledText>{me?.name}</StyledText>
+        <Avatar photoURL={data.photoURL} onPress={handleSignOut} />
+        <StyledText>{data.name}</StyledText>
       </React.Suspense>
     </HeaderRightContainer>
   );

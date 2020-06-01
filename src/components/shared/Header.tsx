@@ -1,7 +1,14 @@
+/* eslint-disable @typescript-eslint/camelcase */
+import type {
+  Header_Query,
+  Header_QueryResponse,
+} from './__generated__/Header_Query.graphql';
 import React, { ReactElement } from 'react';
 
+import { graphql, preloadQuery, usePreloadedQuery } from 'react-relay/hooks';
 import { DrawerNavigationProps } from '../navigation/MainStackNavigator';
 import HeaderRightWidget from '../shared/HeaderRightWidget';
+import environment from '../../relay/RelayEnvironment';
 import styled from 'styled-components/native';
 
 interface Props {
@@ -34,13 +41,33 @@ const Menu = styled.Text`
   font-weight: 600;
 `;
 
+const HeaderQuery = graphql`
+  query Header_Query {
+    me {
+      ...HeaderRightWidget_user
+    }
+  }
+`;
+
+const queryResult = preloadQuery<Header_Query>(
+  environment,
+  HeaderQuery,
+  {},
+  { fetchPolicy: 'store-and-network' },
+);
+
 const Header = (props: Props): ReactElement => {
+  const { me }: Header_QueryResponse = usePreloadedQuery<Header_Query>(
+    HeaderQuery,
+    queryResult,
+  );
+
   return (
     <Container>
       <MenuContainer onPress={(): void => props.navigation.toggleDrawer()}>
         <Menu>Menu</Menu>
       </MenuContainer>
-      <HeaderRightWidget />
+      <HeaderRightWidget user={me} />
     </Container>
   );
 };

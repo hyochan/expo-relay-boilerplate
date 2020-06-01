@@ -1,16 +1,15 @@
 import { AppLoading, Asset } from 'expo';
-import type {
-  AppUserQuery,
-  AppUserQueryResponse,
-} from './__generated__/AppUserQuery.graphql';
 import React, { useEffect, useState } from 'react';
-
 import {
   RelayEnvironmentProvider,
   graphql,
   preloadQuery,
   usePreloadedQuery,
+  useRelayEnvironment,
 } from 'react-relay/hooks';
+
+import type { AppUserQuery } from './__generated__/AppUserQuery.graphql';
+
 import Icons from './utils/Icons';
 import { Image } from 'react-native';
 import RelayEnvironment from './relay/RelayEnvironment';
@@ -44,18 +43,15 @@ const UserQuery = graphql`
   }
 `;
 
-const userFetchResult = preloadQuery(
-  RelayEnvironment,
-  UserQuery,
-  {},
-  { fetchPolicy: 'store-or-network' },
-);
-
 function App(): React.ReactElement {
-  const userData: AppUserQueryResponse = usePreloadedQuery<AppUserQuery>(
+  const environment = useRelayEnvironment();
+  const userFetchResult = preloadQuery<AppUserQuery>(
+    environment,
     UserQuery,
-    userFetchResult,
+    {},
+    { fetchPolicy: 'store-or-network' },
   );
+  const userData = usePreloadedQuery<AppUserQuery>(UserQuery, userFetchResult);
 
   const { setUser } = useAppContext();
 
