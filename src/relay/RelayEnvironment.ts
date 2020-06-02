@@ -23,11 +23,11 @@ function fetchFunction(
   });
 }
 
-const subscribeFunction = (
+function subscribeFunction(
   request: RequestParameters,
   variables: Variables,
   cacheConfig: CacheConfig,
-): SubscribeFunction => {
+): SubscribeFunction {
   return subscribeGraphQL(request, variables, cacheConfig);
 };
 
