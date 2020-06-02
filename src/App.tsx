@@ -10,12 +10,35 @@ import {
 
 import type { AppUserQuery } from './__generated__/AppUserQuery.graphql';
 
+import ErrorBoundary from './ErrorBoundary';
 import Icons from './utils/Icons';
 import { Image } from 'react-native';
 import RelayEnvironment from './relay/RelayEnvironment';
 import RootNavigator from './components/navigation/RootStackNavigator';
 import RootProvider from './providers';
+import styled from 'styled-components/native';
 import { useAppContext } from './providers/AppProvider';
+
+const SuspenseAppContainer = styled.View`
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  background: red;
+`;
+
+const StyledSuspenseText = styled.Text`
+  font-size: 30px;
+  font-weight: 600;
+  color: #fff;
+`;
+
+function LoadingSpinner(): React.ReactElement {
+  return (
+    <SuspenseAppContainer>
+      <StyledSuspenseText>Suspense!</StyledSuspenseText>
+    </SuspenseAppContainer>
+  );
+}
 
 function cacheImages(images: Image[]): Image[] {
   return images.map((image: Image) => {
@@ -74,16 +97,17 @@ function ProviderWrapper(): React.ReactElement {
       <AppLoading
         startAsync={loadAssetsAsync}
         onFinish={(): void => setLoading(true)}
-        // onError={console.warn}
       />
     );
   }
   return (
     <RootProvider>
       <RelayEnvironmentProvider environment={RelayEnvironment}>
-        <React.Suspense fallback={'App fallback...'}>
-          <App />
-        </React.Suspense>
+        <ErrorBoundary fallback={<h2>Could not fetch data.</h2>}>
+          <React.Suspense fallback={<LoadingSpinner />}>
+            <App />
+          </React.Suspense>
+        </ErrorBoundary>
       </RelayEnvironmentProvider>
     </RootProvider>
   );

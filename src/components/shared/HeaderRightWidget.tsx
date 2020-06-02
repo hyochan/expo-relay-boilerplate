@@ -44,10 +44,8 @@ function HeaderRightWidget(props: Props): React.ReactElement {
 
   return (
     <HeaderRightContainer>
-      <React.Suspense fallback={'loading...'}>
-        <Avatar photoURL={data.photoURL} onPress={handleSignOut} />
-        <StyledText>{data.name}</StyledText>
-      </React.Suspense>
+      <Avatar photoURL={data.photoURL} onPress={handleSignOut} />
+      <StyledText>{data.name}</StyledText>
     </HeaderRightContainer>
   );
 }
