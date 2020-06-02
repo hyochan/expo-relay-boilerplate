@@ -1,104 +1,354 @@
-# expo-relay
-[Relay](https://relay.dev/)는 [Graphql](https://graphql.org/) 기반의 `data-driven` React 어플리케이션을 구축
-하기 위한 Javascript 프레임워크입니다. Relay는 정적 쿼리와 사전 코드 생성(ahead-of-time code generation)을 통해 보다 사용하기 쉽고 확장성, 무엇보다도 성능 향상이 가능하도록 디자인 되었습니다.
+# expo-relay-boilerplate
 
-Relay에 대한 자세한 소개는 [Introduction to Relay](https://relay.dev/docs/en/introduction-to-relay)에서 확인하시기 바랍니다.
+## Motivation
 
-이 곳에서는 [React Concurrent Mode](https://reactjs.org/docs/concurrent-mode-intro.html) 및 [Suspense](https://reactjs.org/docs/concurrent-mode-suspense.html)를 지원하는 새로운 Hook 기반의 API인 Relay Hooks의 [experimental](https://github.com/facebook/relay/tree/master/packages/relay-experimental) 릴리즈를 [Expo-web](https://docs.expo.io/workflow/web/#-progressive-web-apps)에 적용하여 빌드하는 방법에 대해 다룹니다.
+At React Conf 2019, React team have been announced [experimental release version of React that supports Concurrent mode and Suspense](https://reactjs.org/docs/concurrent-mode-intro.html). Because of this pattern is based on [Relay](https://relay.dev/en/), I also did research and practice for Relay.
+
+I introduce what I've practiced and provide this for easy start. **Especially**, For this is made with expo-web, It can be support universal layout.
 
 ## Environment
-```
-- node: 12.16.3
-- yarn: 1.22.4
-- dooboo-cli: 3.4.5
-- watchman: 4.9.0
-```
 
-> [dooboo-cli](https://github.com/dooboolab/dooboo-cli)를 통해 expo 템플릿을 생성했습니다.
-
-## Dependency Version Info
 ```
-// dependencies
-- react: 0.0.0-experimental-f42431abe
-- react-dom: 0.0.0-experimental-f42431abe
-- react-relay: ^0.0.0-experimental-895a6fe0
-
-// dev dependencies
-- relay-compiler: 9.1.0
-- relay-compiler-language-typescript: ^12.0.2
-- babel-plugin-relay: ^9.1.0
-- graphql: ^15.0.0
+node: 12.16.3
+yarn: 1.22.4
+dooboo-cli: 3.4.5
+watchman: 4.9.0
 ```
 
-## Getting Started
+## Structure
+
+```
+app/
+├─ .dooboo // necessary if using dooboo-cli
+├─ .expo
+├─ assets
+├─ node_modules/
+├─ src/
+│  └─ __generated__ // static queries by relay compiler
+│  └─ apis
+│  └─ components
+│     └─ navigations
+│     └─ screen
+│     └─ shared
+│     └─ ui
+│  └─ providers
+│  └─ relay // relay runtime environment
+│  └─ types
+│  └─ utils
+│  └─ App.tsx
+│  └─ styled.d.ts
+│  └─ theme.ts
+├─ test/
+├─ .eslintrc.js
+├─ .gitignore
+├─ .ncurc.json
+├─ .prettierrc.js
+├─ .watchmanconfig
+├─ app.json
+├─ App.tsx
+├─ babel.config.js
+├─ codecov.yml
+├─ environment.d.ts
+├─ jest.config.js
+├─ LICENSE
+├─ package.json
+├─ README.md
+├─ relay.config.js  // relay configuration options
+├─ schema.graphql   // graphql schema from the server
+├─ STRINGS.ts
+├─ tsconfig.jest.json
+├─ tsconfig.json
+└─ yarn.lock
+```
+
+## Getting started
+
 ```bash
 git clone https://github.com/devethan/expo-relay.git
 cd expo-relay/
 
 yarn
 yarn start --web
-
-# 새로운 터미널에서..
-yarn relay-watch
 ```
 
 ## Usage
-### usePreloadedQuery
+
+### Configure relay runtime env
+
+The Relay env bundles together the configuration, cache storage, and network-handling that Relay needs in order to operate. And then relay runtime combines component with `graphql`.
+
+In order to render Relay components, you need to render a `RelayEnvironmentProvider` component at the root of the app.
+
+```tsx
+// App root
+const {RelayEnvironmentProvider} = require('react-relay/hooks');
+import RelayEnvironment from './relay/RelayEnvironment';
+
+function ProviderWrapper(): React.ReactElement {
+  return (
+    <RootProvider>
+      <RelayEnvironmentProvider environment={RelayEnvironment}>
+				{...}
+      </RelayEnvironmentProvider>
+    </RootProvider>
+  );
+}
+```
+
+then we can available all descendant Relay components and relevant functions.
+
+Below is Relay runtime env what I've setup.
+
+```tsx
+function fetchFunction(
+  request: RequestParameters,
+  variables: Variables,
+  cacheConfig: CacheConfig,
+): Promise<GraphQLResponse> {
+  return AsyncStorage.getItem('@UserStorage:login_token').then((token) => {
+    return fetchGraphQL(request, variables, cacheConfig, token);
+  });
+};
+
+function subscribeFunction(
+  request: RequestParameters,
+  variables: Variables,
+  cacheConfig: CacheConfig,
+): SubscribeFunction {
+  return subscribeGraphQL(request, variables, cacheConfig);
+};
+
+export default new Environment({
+  network: Network.create(fetchFunction, subscribeFunction),
+  store: new Store(new RecordSource()),
+});
+```
+
+### React.Suspense
+
+Suspense lets your components wait for something before they can render.
+
+```tsx
+import ErrorBoundary from '../';
+<RelayEnvironmentProvider environment={RelayEnvironment}>
+  <ErrorBoundary fallback={<h2>Could not fetch data.</h2>}>
+    <React.Suspense fallback={<LoadingSpinner />}>
+      <App />
+    </React.Suspense>
+  </ErrorBoundary>
+</RelayEnvironmentProvider>
+```
+
+With Suspense, we also handling fetching errors works the same way as handling rendering errors with define `<ErrorBoundary>`
+
+### useFragment
+
+You can use `fragment` for declaring data dependencies for a React component. In order to render the data for a `fragment`, you can use the `useFragment` Hook.
+
+```tsx
+// Friend.tsx
+
+import { graphql, useFragment } from 'react-relay/hooks';
+
+const Friend: FC<any> = (props: Props) => {
+  const data = useFragment(
+    graphql`
+      fragment Friend_user on User {
+        id
+        email
+        name
+        photoURL
+      }
+    `,
+    props.user,
+  );
+
+  return (
+    <Container>
+      <Avatar photoURL={data.photoURL} />
+      <Text>{data.name}</Text>
+    </Container>
+  );
+};
+```
+
+### preloadQuery, usePreloadQuery
+
+Hook used to access data fetched by an earlier call to `preloadQuery` This implements the "Render-as-You-Fetch" pattern.
+
+`usePreloadedQuery` will suspend if the query is still pending, throw an error if it failed, and otherwise return the query results.
+
+```tsx
+// Friends.tsx 
+
+import { graphql, useRalyEnvironment, usePreloadQuery, preloadQuery } from 'react-relay/hooks';
+
+const Friends: FC = (): React.ReactElement => {
+  const environment = useRelayEnvironment();
+
+	const FriendQuery = graphql`
+	  query FriendsQuery {
+	    friends {
+	      ...Friend_user
+	    }
+	  }
+	`;
+
+  const result = preloadQuery<FriendsQuery>(
+    environment,
+    FriendQuery,
+    {},
+    { fetchPolicy: 'store-or-network' },
+  );
+
+  const data: FriendsQueryResponse = usePreloadedQuery<FriendsQuery>(
+    FriendQuery,
+    result,
+  );
+
+  return (
+    <Container>
+      <HeaderTitle>Friends list</HeaderTitle>
+      <StyledList>
+        {data.friends.length > 0 ? (
+          data.friends.map((friend) => <Friend key={friend.id} user={friend} />)
+        ) : (
+          <StyledMessage>Empty list</StyledMessage>
+        )}
+      </StyledList>
+    </Container>
+  );
+};
+```
 
 ### useMutation
 
-### useSubscribe
+You can execute mutation using specified `graphql` template literal. By `isInFlight`, we can know the mutation pending status.
 
-***
-## Integration log
-> experimental 버전이기 때문에 예상하지 못한 에러가 발생할 수 있습니다.
+```tsx
+// SignIn.tsx
 
-### Installation
-```bash
-yarn add react@experimental react-dom@experimental react-relay@experimental
+import { graphql, useMutation } from 'react-relay/hooks';
 
-yarn add --dev relay-compiler relay-config babel-plugin-relay graphql get-graphql-schema relay-compiler-language-typescript @types/react-relay @types/relay-runtime
-```
+const SignInEmailMutation = graphql`
+  mutation SignInMutation($email: String!, $password: String!) {
+    signInEmail(email: $email, password: $password) {
+      token
+      user {
+        id
+        email
+        name
+        photoURL
+      }
+    }
+  }
+`;
 
-### babel config
+function SignIn(props: Props): React.ReactElement {
+  const { setUser } = useAppContext();
+	...
+  const [commit, isInFlight] = useMutation<SignInMutation>(SignInEmailMutation);
 
-```json
-// .babelrc
-{
-  "plugins": [
-    "relay",
-    "macros"
-  ]
+  const mutationConfig = {
+    variables: {
+			...
+    },
+    onCompleted: (response: SignInMutationResponse): void => {
+      const { token, user } = response.signInEmail;
+      AsyncStorage.setItem('@UserStorage:login_token', token)
+        .then((res) => {
+          setUser({
+            ...user,
+          });
+        })
+        .catch((e) => console.error(e));
+    },
+    onError: (error): void => {
+      console.error(error);
+      setError('Check your email and password');
+    },
+  };
+
+  return (
+    <Container>
+			...
+      <Button
+        testID="btn-back"
+        onClick={(): void => commit(mutationConfig)}
+        text={'SignIn'}
+        isLoading={isInFlight}
+      />
+    </Container>
+  );
 }
 ```
 
-### relay-compiler
-Relay는 컴포넌트에 fetching 할 데이터 쿼리를 미리 선언합니다. 그리고 이런 쿼리를 `relay-compiler`에서 컴파일하여 **ahead-of-time code generation**을 완성합니다.
+### useSubscription
 
-이 곳에서는 typescript 환경에서 작업하기 때문에 컴파일 옵션으로 `extensions ts tsx`을 추가합니다. (필요에 따라 `js jsx` 와 같이 추가할 수 있습니다.)
+```tsx
+// Home.tsx
 
-```json
-// package.json
-"scripts": {
-  "relay": "yarn run relay-compiler --schema schema.graphql --src ./src/ --extensions ts tsx --watchman false $@",
+import { graphql, useSubscription } from 'react-relay/hooks';
+
+const UserSubscription = graphql`
+  subscription HomeUserSubscription($userId: ID!) {
+    userSignedIn(userId: $userId) {
+      id
+      email
+    }
+  }
+`;
+
+function Home(props: Props): React.ReactElement {
+  const [signin, setSignin] = React.useState<boolean>(false);
+  const fadeAnim = React.useRef(new Animated.Value(0)).current;
+  const {
+    state: { user },
+  } = useAppContext();
+
+  // Subscription
+  const subscriptionConfig = React.useMemo(() => {
+    return {
+      variables: { userId: user?.id },
+      subscription: UserSubscription,
+      onCompleted: (): void =>
+        console.log('[Home] subscription is now closed.'),
+      updater: (
+        store: RecordSourceSelectorProxy<{}>,
+        data: HomeUserSubscriptionResponse,
+      ): void => {
+        if (data) {
+          setSignin(true);
+        }
+      },
+    };
+  }, [user]);
+
+  useSubscription(subscriptionConfig);
+
+  React.useEffect((): void => {
+    const fadeIn = (): void => {...};
+    const fadeOut = (): void => {...};
+    signin ? fadeIn() : fadeOut();
+  }, [signin]);
+
+  return (
+    <Container>
+			...
+			{* This will show if the user signin on another environment *}
+      <Animated.View
+        style={{...}}
+      >
+        <Text>A new device has signed in</Text>
+      </Animated.View>
+    </Container>
+  );
 }
 ```
 
-### relay-config
-```js
-// relay.config.js
-module.exports = {
-  // ...
-  // Configuration options accepted by the `relay-compiler` command-line tool and `babel-plugin-relay`.
-  src: "./src",
-  schema: "./data/schema.graphql",
-  exclude: ["**/node_modules/**", "**/__mocks__/**", "**/__generated__/**"],
-}
-```
+## Todo
 
-### get-graphql-schema [Optional]
-만약 relay 컴파일에 필요한 `schema.graphql`을 URL을 통해 얻고 싶다면, `get-graphql-schema` 라이브러리를 사용할 수 있다.
-
-```json
-"get-graphql-schema": "get-graphql-schema YOUR_GRAPHQL_SERVER_URI > schema.graphql"
-```
+- [ ]  Describe how to integrate relay to this app
+- [ ]  Update script and describe how to use it
+- [ ]  Resolve cache invalidation when `signout`
+- [ ]  Replace graphql server URL
