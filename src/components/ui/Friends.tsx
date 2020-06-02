@@ -1,6 +1,15 @@
+import type {
+  FriendsQuery,
+  FriendsQueryResponse,
+} from './__generated__/FriendsQuery.graphql';
 import React, { FC } from 'react';
+import {
+  graphql,
+  preloadQuery,
+  usePreloadedQuery,
+  useRelayEnvironment,
+} from 'react-relay/hooks';
 import Friend from '../shared/Friend';
-import type { HomeFriendQueryResponse } from '../screen/__generated__/HomeFriendQuery.graphql';
 import styled from 'styled-components/native';
 
 const Container = styled.View`
@@ -30,11 +39,28 @@ const StyledMessage = styled.Text`
   font-style: italic;
 `;
 
-export interface FriendsProps {
-  data: HomeFriendQueryResponse;
-}
+const FriendQuery = graphql`
+  query FriendsQuery {
+    friends {
+      ...Friend_user
+    }
+  }
+`;
 
-const Friends: FC<FriendsProps> = ({ data }) => {
+const Friends: FC = (): React.ReactElement => {
+  const environment = useRelayEnvironment();
+
+  const result = preloadQuery<FriendsQuery>(
+    environment,
+    FriendQuery,
+    {},
+    { fetchPolicy: 'store-or-network' },
+  );
+
+  const data: FriendsQueryResponse = usePreloadedQuery<FriendsQuery>(
+    FriendQuery,
+    result,
+  );
   return (
     <Container>
       <HeaderTitle>Friends list</HeaderTitle>

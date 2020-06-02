@@ -1,21 +1,11 @@
 import { Animated, Text } from 'react-native';
-import type {
-  HomeFriendQuery,
-  HomeFriendQueryResponse,
-} from './__generated__/HomeFriendQuery.graphql';
-import {
-  preloadQuery,
-  usePreloadedQuery,
-  useRelayEnvironment,
-  useSubscription,
-} from 'react-relay/hooks';
+import { graphql, useSubscription } from 'react-relay/hooks';
 import { DrawerNavigationProps } from '../navigation/MainStackNavigator';
 import Friends from '../ui/Friends';
 import Header from '../shared/Header';
 import type { HomeUserSubscriptionResponse } from './__generated__/HomeUserSubscription.graphql';
 import React from 'react';
 import { RecordSourceSelectorProxy } from 'relay-runtime';
-import graphql from 'babel-plugin-relay/macro';
 import styled from 'styled-components/native';
 import { useAppContext } from '../../providers/AppProvider';
 
@@ -36,14 +26,6 @@ interface Props {
   navigation: DrawerNavigationProps<'Home'>;
 }
 
-const FriendQuery = graphql`
-  query HomeFriendQuery {
-    friends {
-      ...Friend_user
-    }
-  }
-`;
-
 const UserSubscription = graphql`
   subscription HomeUserSubscription($userId: ID!) {
     userSignedIn(userId: $userId) {
@@ -59,20 +41,6 @@ function Home(props: Props): React.ReactElement {
   const {
     state: { user },
   } = useAppContext();
-
-  const environment = useRelayEnvironment();
-
-  const result = preloadQuery<HomeFriendQuery>(
-    environment,
-    FriendQuery,
-    {},
-    { fetchPolicy: 'store-or-network' },
-  );
-
-  const data: HomeFriendQueryResponse = usePreloadedQuery<HomeFriendQuery>(
-    FriendQuery,
-    result,
-  );
 
   // Subscription
   const subscriptionConfig = React.useMemo(() => {
@@ -120,7 +88,7 @@ function Home(props: Props): React.ReactElement {
     <Container>
       <React.Suspense fallback={'Home fallback...'}>
         <Header {...props} />
-        <Friends data={data} />
+        <Friends />
         <Animated.View
           style={{
             position: 'absolute',
