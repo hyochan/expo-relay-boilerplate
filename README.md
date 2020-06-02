@@ -2,9 +2,17 @@
 
 ## Motivation
 
-At React Conf 2019, React team have been announced [experimental release version of React that supports Concurrent mode and Suspense](https://reactjs.org/docs/concurrent-mode-intro.html). Because of this pattern is based on [Relay](https://relay.dev/en/), I also did research and practice for Relay.
+At React Conf 2019, React team have been announced experimental release version of React that supports [Concurrent mode and Suspense](https://reactjs.org/docs/concurrent-mode-intro.html). Because of this pattern is based on [Relay](https://relay.dev/en/), I also did research and practice for Relay.
 
 I introduce what I've practiced and provide this for easy start. **Especially**, For this is made with expo-web, It can be support universal layout.
+
+## Basic Concept
+
+`React` breaks complex interfaces into **reusable** components reducing the coupling between desperate part of an application. And React components is **declarative**.
+
+**BUT** previous data fetching approach *(like REST)* doesn't take any advantages of React's component model. We needed a way to determine all the data needs up-front or statically.
+
+`Relay` provides that components can specify one or multiple fragments for their data dependencies. Each of fragment has unique name within an application which allows us to determine what data needed to fetch and load all the required data in a single network request efficiently at runtime.
 
 ## Environment
 
