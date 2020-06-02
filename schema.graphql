@@ -122,6 +122,7 @@ type MessagePayload {
 type Mutation {
   signInEmail(email: String!, password: String!): AuthPayload!
   signInWithSocialAccount(socialUser: SocialUserInput!): AuthPayload!
+  signInWithFacebook(accessToken: String!): AuthPayload!
   signUp(user: UserInput!): AuthPayload!
   findPassword(email: String!): Boolean
   sendVerification(email: String!): Boolean
@@ -255,8 +256,8 @@ input SocialUserInput {
 }
 
 type Subscription {
-  userSignedIn: User
-  userUpdated: User
+  userSignedIn(userId: ID!): User
+  userUpdated(userId: ID!): User
   friendChanged(userId: ID!): FriendSub
 }
 
