@@ -17,6 +17,7 @@ import React from 'react';
 import { RecordSourceSelectorProxy } from 'relay-runtime';
 import graphql from 'babel-plugin-relay/macro';
 import styled from 'styled-components/native';
+import { useAppContext } from '../../providers/AppProvider';
 
 const Container = styled.View`
   position: relative;
@@ -44,8 +45,8 @@ const FriendQuery = graphql`
 `;
 
 const UserSubscription = graphql`
-  subscription HomeUserSubscription {
-    userSignedIn {
+  subscription HomeUserSubscription($userId: ID!) {
+    userSignedIn(userId: $userId) {
       id
       email
     }
@@ -55,6 +56,9 @@ const UserSubscription = graphql`
 function Home(props: Props): React.ReactElement {
   const [signin, setSignin] = React.useState<boolean>(false);
   const fadeAnim = React.useRef(new Animated.Value(0)).current;
+  const {
+    state: { user },
+  } = useAppContext();
 
   const environment = useRelayEnvironment();
 
@@ -71,9 +75,9 @@ function Home(props: Props): React.ReactElement {
   );
 
   // Subscription
-  const subscriptionConfig = React.useMemo(
-    () => ({
-      variables: {},
+  const subscriptionConfig = React.useMemo(() => {
+    return {
+      variables: { userId: user?.id },
       subscription: UserSubscription,
       onCompleted: (): void =>
         console.log('[Home] subscription is now closed.'),
@@ -85,9 +89,8 @@ function Home(props: Props): React.ReactElement {
           setSignin(true);
         }
       },
-    }),
-    [],
-  );
+    };
+  }, [user]);
 
   useSubscription(subscriptionConfig);
 

@@ -9,8 +9,8 @@ import { RecordSourceSelectorProxy, SelectorData } from 'relay-runtime';
 import environment from '../RelayEnvironment';
 
 const UserSubscription: GraphQLTaggedNode = graphql`
-  subscription UserSubscription {
-    userSignedIn {
+  subscription UserSubscription($userId: ID!) {
+    userSignedIn(userId: $userId) {
       id
       email
     }
@@ -18,7 +18,7 @@ const UserSubscription: GraphQLTaggedNode = graphql`
 `;
 
 export default (): void => {
-  const variables: Variables = {};
+  const variables: Variables = { userId: '' };
   const config = {
     subscription: UserSubscription,
     variables,
