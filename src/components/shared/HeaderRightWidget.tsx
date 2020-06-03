@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
 import { graphql, useFragment } from 'react-relay/hooks';
 import Avatar from '../shared/Avatar';
 import type { HeaderRightWidget_user$key } from './__generated__/HeaderRightWidget_user.graphql';
@@ -44,8 +43,8 @@ function HeaderRightWidget(props: Props): React.ReactElement {
 
   return (
     <HeaderRightContainer>
-      <Avatar photoURL={data.photoURL} onPress={handleSignOut} />
-      <StyledText>{data.name}</StyledText>
+      <Avatar photoURL={data?.photoURL} onPress={handleSignOut} />
+      <StyledText>{data?.name}</StyledText>
     </HeaderRightContainer>
   );
 }

@@ -1,10 +1,10 @@
 import { Animated, Text } from 'react-native';
-import { graphql, useSubscription } from 'react-relay/hooks';
+import React, { useMemo } from 'react';
+import { graphql, useSubscription } from 'relay-hooks';
+
 import { DrawerNavigationProps } from '../navigation/MainStackNavigator';
 import Friends from '../ui/Friends';
 import Header from '../shared/Header';
-import type { HomeUserSubscriptionResponse } from './__generated__/HomeUserSubscription.graphql';
-import React from 'react';
 import { RecordSourceSelectorProxy } from 'relay-runtime';
 import styled from 'styled-components/native';
 import { useAppContext } from '../../providers/AppProvider';
@@ -26,7 +26,7 @@ interface Props {
   navigation: DrawerNavigationProps<'Home'>;
 }
 
-const UserSubscription = graphql`
+const subscriptionSpec = graphql`
   subscription HomeUserSubscription($userId: ID!) {
     userSignedIn(userId: $userId) {
       id
@@ -42,25 +42,24 @@ function Home(props: Props): React.ReactElement {
     state: { user },
   } = useAppContext();
 
-  // Subscription
-  const subscriptionConfig = React.useMemo(() => {
-    return {
-      variables: { userId: user?.id },
-      subscription: UserSubscription,
-      onCompleted: (): void =>
-        console.log('[Home] subscription is now closed.'),
-      updater: (
-        store: RecordSourceSelectorProxy<{}>,
-        data: HomeUserSubscriptionResponse,
-      ): void => {
-        if (data) {
-          setSignin(true);
-        }
-      },
-    };
-  }, [user]);
-
-  useSubscription(subscriptionConfig);
+  useSubscription(
+    useMemo(() => {
+      return {
+        variables: { userId: user?.id },
+        subscription: subscriptionSpec,
+        onCompleted: (): void =>
+          console.log('[Home] subscription is now closed.'),
+        updater: (
+          store: RecordSourceSelectorProxy<unknown>,
+          data: unknown,
+        ): void => {
+          if (data) {
+            setSignin(true);
+          }
+        },
+      };
+    }, [user]),
+  );
 
   React.useEffect((): void => {
     const fadeIn = (): void => {

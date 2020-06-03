@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
 import type {
   Header_Query,
   Header_QueryResponse,

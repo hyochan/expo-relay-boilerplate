@@ -1,4 +1,5 @@
 import { Observable, SubscribeFunction } from 'relay-runtime';
+
 import { SubscriptionClient } from 'subscriptions-transport-ws';
 
 const SUBSCRIPTION_URL = 'ws://hackatalk.azurewebsites.net/graphql';

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
 import React, { FC } from 'react';
 import { graphql, useFragment } from 'react-relay/hooks';
 import Avatar from './Avatar';
@@ -38,7 +37,7 @@ export type Props = {
   user: Friend_user$key;
 };
 
-const Friend: FC<any> = (props: Props) => {
+const Friend: FC<Props> = (props) => {
   const [online, setOnline] = React.useState<boolean>(false);
 
   const data = useFragment(
