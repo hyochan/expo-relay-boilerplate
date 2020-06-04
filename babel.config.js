@@ -15,7 +15,7 @@ module.exports = function(api) {
     //   "@babel/proposal-object-rest-spread"
     // ],
     plugins: [
-      ['relay', { artifactDirectory: './src/__generated__' }],
+      ['relay'],
       'macros',
     ],
   };
