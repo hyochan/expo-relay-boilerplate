@@ -6,6 +6,7 @@ import {
   requestSubscription,
 } from 'react-relay';
 import { RecordSourceSelectorProxy, SelectorData } from 'relay-runtime';
+
 import environment from '../RelayEnvironment';
 
 const UserSubscription: GraphQLTaggedNode = graphql`
@@ -26,7 +27,10 @@ export default (): void => {
       console.log('Subscription is now closed.');
     },
     onError: (error: Error): void => console.log('An error occured:', error),
-    updater: (store: RecordSourceSelectorProxy, data: SelectorData): void => {
+    updater: (
+      store: RecordSourceSelectorProxy<unknown>,
+      data: unknown,
+    ): void => {
       const payload = store.getRootField('userSignedIn');
       const email = payload?.getValue('email');
       console.log(email);

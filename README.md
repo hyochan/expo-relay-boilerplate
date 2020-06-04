@@ -2,9 +2,11 @@
 
 ## Motivation
 
-At React Conf 2019, React team have been announced experimental release version of React that supports [Concurrent mode and Suspense](https://reactjs.org/docs/concurrent-mode-intro.html). Because of this pattern is based on [Relay](https://relay.dev/en/), I also did research and practice for Relay.
+At React Conf 2019, React team have been announced experimental release version of React that supports [Concurrent mode and Suspense](https://reactjs.org/docs/concurrent-mode-intro.html).
 
-I introduce what I've practiced and provide this for easy start. **Especially**, For this is made with expo-web, It can be support universal layout.
+Since we believe the relay is future client for react and graphql, we've created a boilerplate to keep maintain our envronment and share with others.
+
+Also, bare in mind that this boilerplate is built on top of [expo](expo.io) to support universal platform (`ios`, `android`, `web`).
 
 ## Basic Concept
 
@@ -14,14 +16,8 @@ I introduce what I've practiced and provide this for easy start. **Especially**,
 
 `Relay` provides that components can specify one or multiple fragments for their data dependencies. Each of fragment has unique name within an application which allows us to determine what data needed to fetch and load all the required data in a single network request efficiently at runtime.
 
-## Environment
+-- By [relay](https://relay.dev)
 
-```
-node: 12.16.3
-yarn: 1.22.4
-dooboo-cli: 3.4.5
-watchman: 4.9.0
-```
 
 ## Structure
 
@@ -72,7 +68,7 @@ app/
 ## Getting started
 
 ```bash
-git clone https://github.com/devethan/expo-relay.git
+git clone https://github.com/dooboolab/expo-relay.git
 cd expo-relay/
 
 yarn
@@ -96,16 +92,16 @@ function ProviderWrapper(): React.ReactElement {
   return (
     <RootProvider>
       <RelayEnvironmentProvider environment={RelayEnvironment}>
-				{...}
+        {...}
       </RelayEnvironmentProvider>
     </RootProvider>
   );
 }
 ```
 
-then we can available all descendant Relay components and relevant functions.
+Then all the descendant `relay` components and relevant functions become available.
 
-Below is Relay runtime env what I've setup.
+Below is the `relay` runtime env that I've setup.
 
 ```tsx
 function fetchFunction(
@@ -147,7 +143,7 @@ import ErrorBoundary from '../';
 </RelayEnvironmentProvider>
 ```
 
-With Suspense, we also handling fetching errors works the same way as handling rendering errors with define `<ErrorBoundary>`
+With Suspense, handing fetch errors works exactly the same way as handling rendering errors by defining `<ErrorBoundary>`
 
 ### useFragment
 

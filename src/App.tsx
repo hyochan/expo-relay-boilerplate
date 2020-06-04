@@ -103,7 +103,7 @@ function ProviderWrapper(): React.ReactElement {
   return (
     <RootProvider>
       <RelayEnvironmentProvider environment={RelayEnvironment}>
-        <ErrorBoundary fallback={<h2>Could not fetch data.</h2>}>
+        <ErrorBoundary>
           <React.Suspense fallback={<LoadingSpinner />}>
             <App />
           </React.Suspense>

@@ -1,6 +1,6 @@
 import React, { ReactElement } from 'react';
 
-import { DrawerNavigationProps } from '../navigation/HomeStackNavigator';
+import { DrawerNavigationProps } from '../navigation/MainStackNavigator';
 import Header from '../shared/Header';
 import styled from 'styled-components/native';
 

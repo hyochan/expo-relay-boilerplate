@@ -1,5 +1,9 @@
-import { Observable, SubscribeFunction } from 'relay-runtime';
+import { Disposable, GraphQLResponse, Observable } from 'relay-runtime';
+import { RelayObservable } from 'relay-runtime/lib/network/RelayObservable';
+
 import { SubscriptionClient } from 'subscriptions-transport-ws';
+
+export type SubscribeFunction = RelayObservable<GraphQLResponse> | Disposable;
 
 const SUBSCRIPTION_URL = 'ws://hackatalk.azurewebsites.net/graphql';
 
@@ -16,7 +20,7 @@ function subscribeGraphQL(request, variables, cacheConfig): SubscribeFunction {
   });
   console.log('Listening...');
 
-  return Observable.from(subscribeObservable);
+  return Observable.from<any>(subscribeObservable);
 }
 
 export default subscribeGraphQL;

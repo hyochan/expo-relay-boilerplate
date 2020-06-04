@@ -1,20 +1,28 @@
-import React from 'react';
+import { Component, ReactElement } from 'react';
+
+interface Props {
+  children?: ReactElement;
+  fallback?: ReactElement;
+}
 
 // Error boundaries currently have to be classes.
-class ErrorBoundary extends React.Component {
+class ErrorBoundary extends Component<Props> {
   state = { hasError: false, error: null };
-  static getDerivedStateFromError = (error: ErrorBoundary): any => {
+  static getDerivedStateFromError = (error: ErrorBoundary): Record<string, unknown> => {
     return {
       hasError: true,
       error,
     };
   };
 
-  render() {
-    if (this.state.hasError) {
+  public render(): ReactElement | null {
+    if (this.state.hasError && this.props.fallback) {
       return this.props.fallback;
     }
-    return this.props.children;
+    if (this.props.children) {
+      return this.props.children;
+    }
+    return null;
   }
 }
 
