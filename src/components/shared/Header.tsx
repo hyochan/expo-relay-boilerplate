@@ -56,17 +56,19 @@ const queryResult = preloadQuery<Header_Query>(
 );
 
 const Header = (props: Props): ReactElement => {
-  const { me }: Header_QueryResponse = usePreloadedQuery<Header_Query>(
+  const data: Header_QueryResponse = usePreloadedQuery<Header_Query>(
     HeaderQuery,
     queryResult,
   );
 
   return (
     <Container>
-      <MenuContainer onPress={(): void => props.navigation.toggleDrawer()}>
-        <Menu>Menu</Menu>
-      </MenuContainer>
-      <HeaderRightWidget user={me} />
+      <React.Suspense fallback={'Header pending...'}>
+        <MenuContainer onPress={(): void => props.navigation.toggleDrawer()}>
+          <Menu>Menu</Menu>
+        </MenuContainer>
+        <HeaderRightWidget user={data.me} />
+      </React.Suspense>
     </Container>
   );
 };

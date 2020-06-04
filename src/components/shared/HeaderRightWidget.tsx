@@ -7,7 +7,7 @@ import styled from 'styled-components/native';
 import { useAppContext } from '../../providers/AppProvider';
 
 type Props = {
-  user: HeaderRightWidget_user$key;
+  user: HeaderRightWidget_user$key | null;
 };
 
 const HeaderRightContainer = styled.View`

@@ -47,7 +47,7 @@ const FriendQuery = graphql`
   }
 `;
 
-const Friends: FC = (): React.ReactElement => {
+const Friends: FC = () => {
   const environment = useRelayEnvironment();
 
   const result = preloadQuery<FriendsQuery>(
@@ -66,7 +66,9 @@ const Friends: FC = (): React.ReactElement => {
       <HeaderTitle>Friends list</HeaderTitle>
       <StyledList>
         {data.friends.length > 0 ? (
-          data.friends.map((friend) => <Friend key={friend.id} user={friend} />)
+          data.friends.map((friend, idx) => (
+            <Friend key={`friend__${idx}`} user={friend} />
+          ))
         ) : (
           <StyledMessage>Empty list</StyledMessage>
         )}
