@@ -6,12 +6,11 @@ import {
   RecordSource,
   RequestParameters,
   Store,
-  SubscribeFunction,
   Variables,
 } from 'relay-runtime';
+import subscribeGraphQL, { SubscribeFunction } from './subscribeGraphQL';
 import AsyncStorage from '@react-native-community/async-storage';
 import fetchGraphQL from './fetchGraphQL';
-import subscribeGraphQL from './subscribeGraphQL';
 
 function fetchFunction(
   request: RequestParameters,
@@ -29,7 +28,7 @@ function subscribeFunction(
   cacheConfig: CacheConfig,
 ): SubscribeFunction {
   return subscribeGraphQL(request, variables, cacheConfig);
-};
+}
 
 export default new Environment({
   network: Network.create(fetchFunction, subscribeFunction),
