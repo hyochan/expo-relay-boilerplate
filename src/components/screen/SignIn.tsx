@@ -97,6 +97,13 @@ function SignIn(props: Props): React.ReactElement {
     setError('');
     commit(mutationConfig);
   };
+
+  React.useEffect(() => {
+    return (): void => {
+      console.log('[AuthStack] unmounted');
+    };
+  }, []);
+
   return (
     <Container>
       <StyledImage

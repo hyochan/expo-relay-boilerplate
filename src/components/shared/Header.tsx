@@ -4,10 +4,9 @@ import type {
 } from './__generated__/Header_Query.graphql';
 import React, { ReactElement } from 'react';
 
-import { graphql, preloadQuery, usePreloadedQuery } from 'react-relay/hooks';
+import { graphql, preloadQuery, usePreloadedQuery, useRelayEnvironment } from 'react-relay/hooks';
 import { DrawerNavigationProps } from '../navigation/MainStackNavigator';
 import HeaderRightWidget from '../shared/HeaderRightWidget';
-import environment from '../../relay/RelayEnvironment';
 import styled from 'styled-components/native';
 
 interface Props {
@@ -48,14 +47,14 @@ const HeaderQuery = graphql`
   }
 `;
 
-const queryResult = preloadQuery<Header_Query>(
-  environment,
-  HeaderQuery,
-  {},
-  { fetchPolicy: 'store-and-network' },
-);
-
 const Header = (props: Props): ReactElement => {
+  const environment = useRelayEnvironment();
+  const queryResult = preloadQuery<Header_Query>(
+    environment,
+    HeaderQuery,
+    {},
+    { fetchPolicy: 'store-and-network' },
+  );
   const data: Header_QueryResponse = usePreloadedQuery<Header_Query>(
     HeaderQuery,
     queryResult,
