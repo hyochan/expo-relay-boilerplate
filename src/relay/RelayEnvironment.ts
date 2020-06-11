@@ -30,7 +30,10 @@ function subscribeFunction(
   return subscribeGraphQL(request, variables, cacheConfig);
 }
 
-export default new Environment({
+export const relayEnvConfig = {
   network: Network.create(fetchFunction, subscribeFunction),
   store: new Store(new RecordSource()),
-});
+};
+
+export const createRelayEnvironment = (): Environment =>
+  new Environment(relayEnvConfig);
