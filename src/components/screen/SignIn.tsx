@@ -3,9 +3,9 @@ import type {
   SignInMutationResponse,
 } from './__generated__/SignInMutation.graphql';
 import AsyncStorage from '@react-native-community/async-storage';
+import { AuthStackNavigationProps } from '../navigation/AuthStackNavigator';
 import Button from '../shared/Button';
 import React from 'react';
-import { RootStackNavigationProps } from '../navigation/RootStackNavigator';
 import graphql from 'babel-plugin-relay/macro';
 import styled from 'styled-components/native';
 import { useAppContext } from '../../providers/AppProvider';
@@ -37,16 +37,24 @@ const StyledTextInput = styled.TextInput`
   color: ${({ theme }): string => theme.fontColor};
 `;
 
-const ErrorMessage = styled.Text`
-  color: #f57b51;
+const StyledText = styled.Text`
   width: 320px;
-  height: 20px;
   text-align: center;
-  margin-bottom: 10px;
+  margin: 10px 0;
+`;
+
+const SignupText = styled(StyledText)`
+  color: #373d78;
+  text-decoration: underline;
+  cursor: pointer;
+`;
+
+const ErrorMessage = styled(StyledText)`
+  color: #f57b51;
 `;
 
 interface Props {
-  navigation: RootStackNavigationProps<'Auth'>;
+  navigation: AuthStackNavigationProps<'Signin'>;
 }
 
 // Define a mutation query
@@ -80,7 +88,7 @@ function SignIn(props: Props): React.ReactElement {
     onCompleted: (response: SignInMutationResponse): void => {
       const { token, user } = response.signInEmail;
       AsyncStorage.setItem('@UserStorage:login_token', token)
-        .then((res) => {
+        .then(() => {
           setUser({
             ...user,
           });
@@ -97,6 +105,11 @@ function SignIn(props: Props): React.ReactElement {
     setError('');
     commit(mutationConfig);
   };
+
+  const moveScreen = (): void => {
+    props.navigation.navigate('SignUp');
+  };
+
   return (
     <Container>
       <StyledImage
@@ -125,6 +138,9 @@ function SignIn(props: Props): React.ReactElement {
         text={'SignIn'}
         isLoading={isInFlight}
       />
+      <SignupText onPress={moveScreen}>
+        {"Don't have an account yet?"}
+      </SignupText>
     </Container>
   );
 }
