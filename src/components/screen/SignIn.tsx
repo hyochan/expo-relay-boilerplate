@@ -110,6 +110,12 @@ function SignIn(props: Props): React.ReactElement {
     props.navigation.navigate('SignUp');
   };
 
+  React.useEffect(() => {
+    return (): void => {
+      // console.log('[AuthStack] unmounted');
+    };
+  }, []);
+
   return (
     <Container>
       <StyledImage

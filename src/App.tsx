@@ -1,5 +1,5 @@
 import { AppLoading, Asset } from 'expo';
-import React, { useEffect, useState } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
 import {
   RelayEnvironmentProvider,
   graphql,
@@ -13,7 +13,6 @@ import type { AppUserQuery } from './__generated__/AppUserQuery.graphql';
 import ErrorBoundary from './ErrorBoundary';
 import Icons from './utils/Icons';
 import { Image } from 'react-native';
-import RelayEnvironment from './relay/RelayEnvironment';
 import RootNavigator from './components/navigation/RootStackNavigator';
 import RootProvider from './providers';
 import styled from 'styled-components/native';
@@ -89,6 +88,22 @@ function App(): React.ReactElement {
   return <RootNavigator />;
 }
 
+function RelayProviderWrapper(): ReactElement {
+  const {
+    state: { relay },
+  } = useAppContext();
+
+  return (
+    <RelayEnvironmentProvider environment={relay}>
+      <ErrorBoundary>
+        <React.Suspense fallback={<LoadingSpinner />}>
+          <App />
+        </React.Suspense>
+      </ErrorBoundary>
+    </RelayEnvironmentProvider>
+  );
+}
+
 function ProviderWrapper(): React.ReactElement {
   const [loading, setLoading] = useState(false);
 
@@ -102,13 +117,7 @@ function ProviderWrapper(): React.ReactElement {
   }
   return (
     <RootProvider>
-      <RelayEnvironmentProvider environment={RelayEnvironment}>
-        <ErrorBoundary>
-          <React.Suspense fallback={<LoadingSpinner />}>
-            <App />
-          </React.Suspense>
-        </ErrorBoundary>
-      </RelayEnvironmentProvider>
+      <RelayProviderWrapper />
     </RootProvider>
   );
 }

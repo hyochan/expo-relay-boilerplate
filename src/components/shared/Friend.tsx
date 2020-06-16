@@ -43,8 +43,6 @@ const Friend: FC<Props> = (props) => {
   const data = useFragment(
     graphql`
       fragment Friend_user on User {
-        id
-        email
         name
         photoURL
       }

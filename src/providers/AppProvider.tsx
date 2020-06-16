@@ -1,5 +1,8 @@
 import React, { useReducer } from 'react';
 
+import RelayEnvironment, {
+  RelayEnvironmentProps,
+} from '../relay/RelayEnvironment';
 import { AsyncStorage } from 'react-native';
 import { User } from '../types';
 import createCtx from '../utils/createCtx';
@@ -9,6 +12,7 @@ interface Context {
   setUser: (user: User) => void;
   resetUser: () => void;
   callDefault: () => void;
+  resetRelay: () => void;
 }
 const [useCtx, Provider] = createCtx<Context>();
 
@@ -16,14 +20,17 @@ export enum ActionType {
   ResetUser = 'reset-user',
   SetUser = 'set-user',
   CallDefault = 'call-default',
+  ResetRelay = 'reset-relay',
 }
 
 export interface State {
   user: User | null;
+  relay: RelayEnvironmentProps;
 }
 
 const initialState: State = {
   user: null,
+  relay: RelayEnvironment.get(),
 };
 
 interface SetUserAction {
@@ -38,8 +45,15 @@ interface ResetUserAction {
 interface GetStateAction {
   type: ActionType.CallDefault;
 }
+interface ResetRelayAction {
+  type: ActionType.ResetRelay;
+}
 
-type Action = SetUserAction | ResetUserAction | GetStateAction;
+type Action =
+  | SetUserAction
+  | ResetUserAction
+  | GetStateAction
+  | ResetRelayAction;
 
 interface Props {
   children?: React.ReactElement;
@@ -70,12 +84,21 @@ const resetUser = (dispatch: React.Dispatch<ResetUserAction>) => (): void => {
   });
 };
 
+const resetRelay = (dispatch: React.Dispatch<ResetRelayAction>) => (): void => {
+  dispatch({
+    type: ActionType.ResetRelay,
+  });
+};
+
 const reducer: Reducer = (state = initialState, action) => {
   switch (action.type) {
     case 'reset-user':
       return initialState;
     case 'set-user':
       return { ...state, user: action.payload };
+    case 'reset-relay':
+      RelayEnvironment.reset();
+      return state;
     default:
       return state;
   }
@@ -88,6 +111,7 @@ function AppProvider(props: Props): React.ReactElement {
     setUser: setUser(dispatch),
     resetUser: resetUser(dispatch),
     callDefault: callDefault(dispatch),
+    resetRelay: resetRelay(dispatch),
   };
 
   return <Provider value={{ state, ...actions }}>{props.children}</Provider>;
