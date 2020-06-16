@@ -9,6 +9,7 @@ import {
   usePreloadedQuery,
   useRelayEnvironment,
 } from 'react-relay/hooks';
+import { DrawerNavigationProps } from '../navigation/MainStackNavigator';
 import Friend from '../shared/Friend';
 import styled from 'styled-components/native';
 
@@ -47,26 +48,33 @@ const FriendQuery = graphql`
   }
 `;
 
-const Friends: FC = () => {
+interface Props {
+  navigation: DrawerNavigationProps<'Home' | 'Temp'>;
+}
+
+const Friends: FC<Props> = (props) => {
   const environment = useRelayEnvironment();
 
   const result = preloadQuery<FriendsQuery>(
     environment,
     FriendQuery,
     {},
-    { fetchPolicy: 'store-or-network' },
+    { fetchPolicy: 'store-and-network' },
   );
 
-  const data: FriendsQueryResponse = usePreloadedQuery<FriendsQuery>(
+  const { friends }: FriendsQueryResponse = usePreloadedQuery<FriendsQuery>(
     FriendQuery,
     result,
   );
+
+  console.log('Friends rendering', friends);
+
   return (
     <Container>
       <HeaderTitle>Friends list</HeaderTitle>
       <StyledList>
-        {data.friends.length > 0 ? (
-          data.friends.map((friend, idx) => (
+        {friends.length > 0 ? (
+          friends.map((friend, idx) => (
             <Friend key={`friend__${idx}`} user={friend} />
           ))
         ) : (

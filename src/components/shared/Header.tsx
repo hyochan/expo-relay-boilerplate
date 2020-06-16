@@ -4,7 +4,12 @@ import type {
 } from './__generated__/Header_Query.graphql';
 import React, { ReactElement } from 'react';
 
-import { graphql, preloadQuery, usePreloadedQuery, useRelayEnvironment } from 'react-relay/hooks';
+import {
+  graphql,
+  preloadQuery,
+  usePreloadedQuery,
+  useRelayEnvironment,
+} from 'react-relay/hooks';
 import { DrawerNavigationProps } from '../navigation/MainStackNavigator';
 import HeaderRightWidget from '../shared/HeaderRightWidget';
 import styled from 'styled-components/native';
@@ -55,10 +60,12 @@ const Header = (props: Props): ReactElement => {
     {},
     { fetchPolicy: 'store-and-network' },
   );
-  const data: Header_QueryResponse = usePreloadedQuery<Header_Query>(
+  const { me }: Header_QueryResponse = usePreloadedQuery<Header_Query>(
     HeaderQuery,
     queryResult,
   );
+
+  console.log('Header rendering', me);
 
   return (
     <Container>
@@ -66,7 +73,7 @@ const Header = (props: Props): ReactElement => {
         <MenuContainer onPress={(): void => props.navigation.toggleDrawer()}>
           <Menu>Menu</Menu>
         </MenuContainer>
-        <HeaderRightWidget user={data.me} />
+        <HeaderRightWidget user={me} />
       </React.Suspense>
     </Container>
   );

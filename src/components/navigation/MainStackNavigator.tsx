@@ -55,7 +55,7 @@ function MainStackNavigator(): ReactElement {
 
   React.useEffect(() => {
     return (): void => {
-      console.log('[MainStack] unmounted');
+      // console.log('[MainStack] unmounted');
       resetRelay();
     };
   }, []);
@@ -71,7 +71,7 @@ function MainStackNavigator(): ReactElement {
       overlayColor="transparent"
     >
       <Drawer.Screen name="Home" component={Home} />
-      <Drawer.Screen name="Temp" component={Temp} />
+      {/* <Drawer.Screen name="Temp" component={Temp} /> */}
     </Drawer.Navigator>
   );
 }

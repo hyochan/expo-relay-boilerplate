@@ -100,7 +100,7 @@ function SignIn(props: Props): React.ReactElement {
 
   React.useEffect(() => {
     return (): void => {
-      console.log('[AuthStack] unmounted');
+      // console.log('[AuthStack] unmounted');
     };
   }, []);
 

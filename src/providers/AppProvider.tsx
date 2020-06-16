@@ -1,10 +1,11 @@
 import React, { useReducer } from 'react';
 
+import RelayEnvironment, {
+  RelayEnvironmentProps,
+} from '../relay/RelayEnvironment';
 import { AsyncStorage } from 'react-native';
-import { Environment as RelayEnvironment } from 'relay-runtime/lib/store/RelayStoreTypes';
 import { User } from '../types';
 import createCtx from '../utils/createCtx';
-import { createRelayEnvironment } from '../relay/RelayEnvironment';
 
 interface Context {
   state: State;
@@ -24,12 +25,12 @@ export enum ActionType {
 
 export interface State {
   user: User | null;
-  relay: RelayEnvironment;
+  relay: RelayEnvironmentProps;
 }
 
 const initialState: State = {
   user: null,
-  relay: createRelayEnvironment(),
+  relay: RelayEnvironment.get(),
 };
 
 interface SetUserAction {
@@ -96,7 +97,8 @@ const reducer: Reducer = (state = initialState, action) => {
     case 'set-user':
       return { ...state, user: action.payload };
     case 'reset-relay':
-      return { ...state, relay: createRelayEnvironment() };
+      RelayEnvironment.reset();
+      return state;
     default:
       return state;
   }
