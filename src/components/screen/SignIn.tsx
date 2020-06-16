@@ -54,7 +54,7 @@ const ErrorMessage = styled(StyledText)`
 `;
 
 interface Props {
-  navigation: AuthStackNavigationProps<'Signin'>;
+  navigation: AuthStackNavigationProps<'SignIn'>;
 }
 
 // Define a mutation query
