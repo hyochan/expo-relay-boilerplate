@@ -87,7 +87,7 @@ function Home(props: Props): React.ReactElement {
     <Container>
       <React.Suspense fallback={'Home fallback...'}>
         <Header {...props} />
-        <Friends />
+        <Friends {...props}/>
         <Animated.View
           style={{
             position: 'absolute',
