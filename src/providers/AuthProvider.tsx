@@ -1,34 +1,28 @@
 import React, { useReducer } from 'react';
 
-import RelayEnvironment, {
-  RelayEnvironmentProps,
-} from '../relay/RelayEnvironment';
 import { AsyncStorage } from 'react-native';
+import Relay from '../relay';
 import { User } from '../types';
 import createCtx from '../utils/createCtx';
 
 interface Context {
   state: State;
-  setUser: (user: User) => void;
-  resetUser: () => void;
-  resetRelay: () => void;
+  setUser(user: User): void;
+  resetUser(): void;
 }
 const [useCtx, Provider] = createCtx<Context>();
 
 export enum ActionType {
   ResetUser = 'reset-user',
   SetUser = 'set-user',
-  ResetRelay = 'reset-relay',
 }
 
 export interface State {
   user: User | null;
-  relay: RelayEnvironmentProps;
 }
 
 const initialState: State = {
   user: null,
-  relay: RelayEnvironment.getEnvironment(),
 };
 
 interface SetUserAction {
@@ -40,12 +34,7 @@ interface ResetUserAction {
   type: ActionType.ResetUser;
 }
 
-interface ResetRelayAction {
-  type: ActionType.ResetRelay;
-  payload: RelayEnvironmentProps;
-}
-
-type Action = SetUserAction | ResetUserAction | ResetRelayAction;
+type Action = SetUserAction | ResetUserAction;
 
 interface Props {
   children?: React.ReactElement;
@@ -70,21 +59,13 @@ const resetUser = (dispatch: React.Dispatch<ResetUserAction>) => (): void => {
   });
 };
 
-const resetRelay = (dispatch: React.Dispatch<ResetRelayAction>) => (): void => {
-  dispatch({
-    type: ActionType.ResetRelay,
-    payload: RelayEnvironment.resetEnvironment(),
-  });
-};
-
 const reducer: Reducer = (state = initialState, action) => {
   switch (action.type) {
     case 'reset-user':
-      return { ...initialState, relay: RelayEnvironment.resetEnvironment() };
+      Relay.init();
+      return initialState;
     case 'set-user':
       return { ...state, user: action.payload };
-    case 'reset-relay':
-      return { ...state, relay: action.payload };
     default:
       return state;
   }
@@ -96,7 +77,6 @@ function AuthProvider(props: Props): React.ReactElement {
   const actions = {
     setUser: setUser(dispatch),
     resetUser: resetUser(dispatch),
-    resetRelay: resetRelay(dispatch),
   };
 
   return <Provider value={{ state, ...actions }}>{props.children}</Provider>;
