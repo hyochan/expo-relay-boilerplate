@@ -16,11 +16,12 @@ const StyledButton = styled.View`
   border-radius: 4px;
   border-width: 2px;
   width: 320px;
-  height: 52px;
+  min-height: 35px;
   border-color: ${({ theme }): string => theme.btnPrimary};
 
   align-items: center;
   justify-content: center;
+  margin: 2px;
 `;
 
 const StyledButtonDisabled = styled(StyledButton)`
