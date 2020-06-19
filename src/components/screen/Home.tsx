@@ -7,7 +7,7 @@ import Friends from '../ui/Friends';
 import Header from '../shared/Header';
 import { RecordSourceSelectorProxy } from 'relay-runtime';
 import styled from 'styled-components/native';
-import { useAppContext } from '../../providers/AppProvider';
+import { useAuthContext } from '../../providers/AuthProvider';
 
 const Container = styled.View`
   position: relative;
@@ -40,7 +40,7 @@ function Home(props: Props): React.ReactElement {
   const fadeAnim = React.useRef(new Animated.Value(0)).current;
   const {
     state: { user },
-  } = useAppContext();
+  } = useAuthContext();
 
   useSubscription(
     useMemo(() => {
@@ -87,7 +87,7 @@ function Home(props: Props): React.ReactElement {
     <Container>
       <React.Suspense fallback={'Home fallback...'}>
         <Header {...props} />
-        <Friends {...props}/>
+        <Friends />
         <Animated.View
           style={{
             position: 'absolute',

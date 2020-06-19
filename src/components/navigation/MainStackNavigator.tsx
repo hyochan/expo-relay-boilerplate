@@ -10,7 +10,7 @@ import React, { ReactElement } from 'react';
 import Home from '../screen/Home';
 import Temp from '../screen/Temp';
 import styled from 'styled-components/native';
-import { useAppContext } from '../../providers/AppProvider';
+import { useAuthContext } from '../../providers/AuthProvider';
 import { useThemeContext } from '../../providers/ThemeProvider';
 
 export type DrawerParamList = {
@@ -27,7 +27,7 @@ const Drawer = createDrawerNavigator<DrawerParamList>();
 
 function CustomDrawerContent(props): ReactElement {
   const { changeThemeType, theme } = useThemeContext();
-  const { resetUser } = useAppContext();
+  const { resetUser } = useAuthContext();
   return (
     <DrawerContentScrollView {...props}>
       <DrawerItemList {...props} />
@@ -51,14 +51,14 @@ function CustomDrawerContent(props): ReactElement {
 
 function MainStackNavigator(): ReactElement {
   const { theme } = useThemeContext();
-  const { resetRelay } = useAppContext();
+  // const { resetRelay } = useAuthContext();
 
-  React.useEffect(() => {
-    return (): void => {
-      // console.log('[MainStack] unmounted');
-      resetRelay();
-    };
-  }, []);
+  // React.useEffect(() => {
+  //   return (): void => {
+  //     console.log('[MainStack] unmounted');
+  //     resetRelay();
+  //   };
+  // }, []);
 
   return (
     <Drawer.Navigator

@@ -7,7 +7,7 @@ import MainStack from './MainStackNavigator';
 import { NavigationContainer } from '@react-navigation/native';
 import React from 'react';
 import SignIn from '../screen/SignIn';
-import { useAppContext } from '../../providers/AppProvider';
+import { useAuthContext } from '../../providers/AuthProvider';
 import { useThemeContext } from '../../providers/ThemeProvider';
 
 export type RootStackParamList = {
@@ -24,7 +24,7 @@ const Stack = createStackNavigator<RootStackParamList>();
 
 function RootNavigator(): React.ReactElement {
   const { theme } = useThemeContext();
-  const { state } = useAppContext();
+  const { state } = useAuthContext();
   return (
     <NavigationContainer>
       <Stack.Navigator

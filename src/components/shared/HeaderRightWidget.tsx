@@ -4,7 +4,7 @@ import type { HeaderRightWidget_user$key } from './__generated__/HeaderRightWidg
 import React from 'react';
 
 import styled from 'styled-components/native';
-import { useAppContext } from '../../providers/AppProvider';
+import { useAuthContext } from '../../providers/AuthProvider';
 
 type Props = {
   user: HeaderRightWidget_user$key | null;
@@ -24,7 +24,7 @@ const StyledText = styled.Text`
 `;
 
 function HeaderRightWidget(props: Props): React.ReactElement {
-  const { resetUser } = useAppContext();
+  const { resetUser } = useAuthContext();
   const handleSignOut = (): void => {
     resetUser();
   };

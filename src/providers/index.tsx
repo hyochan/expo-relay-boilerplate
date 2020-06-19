@@ -1,6 +1,6 @@
 import { ThemeProvider, ThemeType } from '../providers/ThemeProvider';
 
-import { AppProvider } from './AppProvider';
+import { AuthProvider } from './AuthProvider';
 import React from 'react';
 
 interface Props {
@@ -17,7 +17,7 @@ const RootProvider = ({
     <ThemeProvider
       initialThemeType={initialThemeType}
     >
-      <AppProvider>{children}</AppProvider>
+      <AuthProvider>{children}</AuthProvider>
     </ThemeProvider>
   );
 };
