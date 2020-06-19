@@ -3,10 +3,10 @@ import {
   createStackNavigator,
 } from '@react-navigation/stack';
 
+import AuthStack from './AuthStackNavigator';
 import MainStack from './MainStackNavigator';
 import { NavigationContainer } from '@react-navigation/native';
 import React from 'react';
-import SignIn from '../screen/SignIn';
 import { useAppContext } from '../../providers/AppProvider';
 import { useThemeContext } from '../../providers/ThemeProvider';
 
@@ -41,7 +41,7 @@ function RootNavigator(): React.ReactElement {
         {state.user ? (
           <Stack.Screen name="Main" component={MainStack} />
         ) : (
-          <Stack.Screen name="Auth" component={SignIn} />
+          <Stack.Screen name="Auth" component={AuthStack} />
         )}
       </Stack.Navigator>
     </NavigationContainer>
