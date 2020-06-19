@@ -12,6 +12,7 @@ import {
 } from 'react-relay/hooks';
 import { DrawerNavigationProps } from '../navigation/MainStackNavigator';
 import HeaderRightWidget from '../shared/HeaderRightWidget';
+import Relay from '../../relay';
 import styled from 'styled-components/native';
 
 interface Props {
@@ -53,19 +54,20 @@ const HeaderQuery = graphql`
 `;
 
 const Header = (props: Props): ReactElement => {
-  const environment = useRelayEnvironment();
+  // const environment = useRelayEnvironment();
+  const environment = Relay.environment;
   const queryResult = preloadQuery<Header_Query>(
     environment,
     HeaderQuery,
     {},
-    { fetchPolicy: 'store-and-network' },
+    { fetchPolicy: 'network-only' },
   );
-  const { me }: Header_QueryResponse = usePreloadedQuery<Header_Query>(
+  const data: Header_QueryResponse = usePreloadedQuery<Header_Query>(
     HeaderQuery,
     queryResult,
   );
 
-  console.log('Header rendering', me);
+  console.log('Header rendering', data.me, environment.configName);
 
   return (
     <Container>
@@ -73,7 +75,7 @@ const Header = (props: Props): ReactElement => {
         <MenuContainer onPress={(): void => props.navigation.toggleDrawer()}>
           <Menu>Menu</Menu>
         </MenuContainer>
-        <HeaderRightWidget user={me} />
+        <HeaderRightWidget user={data.me} />
       </React.Suspense>
     </Container>
   );

@@ -51,14 +51,12 @@ function CustomDrawerContent(props): ReactElement {
 
 function MainStackNavigator(): ReactElement {
   const { theme } = useThemeContext();
-  // const { resetRelay } = useAuthContext();
 
-  // React.useEffect(() => {
-  //   return (): void => {
-  //     console.log('[MainStack] unmounted');
-  //     resetRelay();
-  //   };
-  // }, []);
+  React.useEffect(() => {
+    return (): void => {
+      console.log('[MainStack] unmounted');
+    };
+  }, []);
 
   return (
     <Drawer.Navigator

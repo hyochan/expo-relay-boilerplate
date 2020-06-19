@@ -1,5 +1,5 @@
 import { AppLoading, Asset } from 'expo';
-import React, { ReactElement, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   RelayEnvironmentProvider,
   graphql,
@@ -13,31 +13,11 @@ import type { AppUserQuery } from './__generated__/AppUserQuery.graphql';
 import ErrorBoundary from './ErrorBoundary';
 import Icons from './utils/Icons';
 import { Image } from 'react-native';
+import Relay from './relay';
 import RootNavigator from './components/navigation/RootStackNavigator';
 import RootProvider from './providers';
-import styled from 'styled-components/native';
-import { useAppContext } from './providers/AppProvider';
-
-const SuspenseAppContainer = styled.View`
-  flex: 1;
-  justify-content: center;
-  align-items: center;
-  background: red;
-`;
-
-const StyledSuspenseText = styled.Text`
-  font-size: 30px;
-  font-weight: 600;
-  color: #fff;
-`;
-
-function LoadingSpinner(): React.ReactElement {
-  return (
-    <SuspenseAppContainer>
-      <StyledSuspenseText>Suspense!</StyledSuspenseText>
-    </SuspenseAppContainer>
-  );
-}
+import SuspenseScreen from './components/screen/Suspense';
+import { useAuthContext } from './providers/AuthProvider';
 
 function cacheImages(images: Image[]): Image[] {
   return images.map((image: Image) => {
@@ -66,16 +46,15 @@ const UserQuery = graphql`
 `;
 
 function App(): React.ReactElement {
-  const environment = useRelayEnvironment();
   const userFetchResult = preloadQuery<AppUserQuery>(
-    environment,
+    Relay.environment,
     UserQuery,
     {},
-    { fetchPolicy: 'store-or-network' },
+    { fetchPolicy: 'store-and-network' },
   );
   const userData = usePreloadedQuery<AppUserQuery>(UserQuery, userFetchResult);
 
-  const { setUser } = useAppContext();
+  const { setUser } = useAuthContext();
 
   useEffect(() => {
     if (userData.me) {
@@ -86,22 +65,6 @@ function App(): React.ReactElement {
   }, [userData.me]);
 
   return <RootNavigator />;
-}
-
-function RelayProviderWrapper(): ReactElement {
-  const {
-    state: { relay },
-  } = useAppContext();
-
-  return (
-    <RelayEnvironmentProvider environment={relay}>
-      <ErrorBoundary>
-        <React.Suspense fallback={<LoadingSpinner />}>
-          <App />
-        </React.Suspense>
-      </ErrorBoundary>
-    </RelayEnvironmentProvider>
-  );
 }
 
 function ProviderWrapper(): React.ReactElement {
@@ -117,7 +80,13 @@ function ProviderWrapper(): React.ReactElement {
   }
   return (
     <RootProvider>
-      <RelayProviderWrapper />
+      <RelayEnvironmentProvider environment={Relay.environment}>
+        <ErrorBoundary fallback={<SuspenseScreen error />}>
+          <React.Suspense fallback={<SuspenseScreen />}>
+            <App />
+          </React.Suspense>
+        </ErrorBoundary>
+      </RelayEnvironmentProvider>
     </RootProvider>
   );
 }
