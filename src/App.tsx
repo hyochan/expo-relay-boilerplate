@@ -1,5 +1,5 @@
 import { AppLoading, Asset } from 'expo';
-import React, { ReactElement, useEffect, useState } from 'react';
+import React, { ReactElement, Suspense, useEffect, useState } from 'react';
 import {
   RelayEnvironmentProvider,
   graphql,
@@ -9,35 +9,14 @@ import {
 } from 'react-relay/hooks';
 
 import type { AppUserQuery } from './__generated__/AppUserQuery.graphql';
-
 import ErrorBoundary from './ErrorBoundary';
+
 import Icons from './utils/Icons';
 import { Image } from 'react-native';
 import RootNavigator from './components/navigation/RootStackNavigator';
 import RootProvider from './providers';
-import styled from 'styled-components/native';
-import { useAppContext } from './providers/AppProvider';
-
-const SuspenseAppContainer = styled.View`
-  flex: 1;
-  justify-content: center;
-  align-items: center;
-  background: red;
-`;
-
-const StyledSuspenseText = styled.Text`
-  font-size: 30px;
-  font-weight: 600;
-  color: #fff;
-`;
-
-function LoadingSpinner(): React.ReactElement {
-  return (
-    <SuspenseAppContainer>
-      <StyledSuspenseText>Suspense!</StyledSuspenseText>
-    </SuspenseAppContainer>
-  );
-}
+import SuspenseScreen from './components/screen/Suspense';
+import { useAuthContext } from './providers/AuthProvider';
 
 function cacheImages(images: Image[]): Image[] {
   return images.map((image: Image) => {
@@ -54,7 +33,7 @@ const loadAssetsAsync = async (): Promise<void> => {
   await Promise.all([...imageAssets]);
 };
 
-const UserQuery = graphql`
+const AppUser = graphql`
   query AppUserQuery {
     me {
       id
@@ -65,46 +44,42 @@ const UserQuery = graphql`
   }
 `;
 
-function App(): React.ReactElement {
-  const environment = useRelayEnvironment();
-  const userFetchResult = preloadQuery<AppUserQuery>(
-    environment,
-    UserQuery,
+function App(): ReactElement {
+  const AppUserResult = preloadQuery<AppUserQuery>(
+    useRelayEnvironment(),
+    AppUser,
     {},
     { fetchPolicy: 'store-or-network' },
   );
-  const userData = usePreloadedQuery<AppUserQuery>(UserQuery, userFetchResult);
+  const { me } = usePreloadedQuery<AppUserQuery>(AppUser, AppUserResult);
 
-  const { setUser } = useAppContext();
+  const { setUser } = useAuthContext();
 
   useEffect(() => {
-    if (userData.me) {
+    if (me) {
       setUser({
-        ...userData.me,
+        ...me,
       });
     }
-  }, [userData.me]);
+  }, [me]);
 
   return <RootNavigator />;
 }
 
-function RelayProviderWrapper(): ReactElement {
+function RelayEnvironmentWrapper({ children }): ReactElement {
   const {
     state: { relay },
-  } = useAppContext();
-
+  } = useAuthContext();
   return (
     <RelayEnvironmentProvider environment={relay}>
-      <ErrorBoundary>
-        <React.Suspense fallback={<LoadingSpinner />}>
-          <App />
-        </React.Suspense>
+      <ErrorBoundary fallback={<SuspenseScreen error />}>
+        <Suspense fallback={<SuspenseScreen />}>{children}</Suspense>
       </ErrorBoundary>
     </RelayEnvironmentProvider>
   );
 }
 
-function ProviderWrapper(): React.ReactElement {
+function ProviderWrapper(): ReactElement {
   const [loading, setLoading] = useState(false);
 
   if (loading) {
@@ -117,7 +92,9 @@ function ProviderWrapper(): React.ReactElement {
   }
   return (
     <RootProvider>
-      <RelayProviderWrapper />
+      <RelayEnvironmentWrapper>
+        <App />
+      </RelayEnvironmentWrapper>
     </RootProvider>
   );
 }

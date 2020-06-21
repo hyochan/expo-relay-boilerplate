@@ -7,7 +7,7 @@ import {
 } from 'react-relay';
 import { RecordSourceSelectorProxy } from 'relay-runtime';
 
-import RelayEnvironment from '../RelayEnvironment';
+import Relay from '..';
 
 const UserSubscription: GraphQLTaggedNode = graphql`
   subscription UserSubscription($userId: ID!) {
@@ -39,5 +39,5 @@ export default (): void => {
 
   console.log('Listening...');
 
-  requestSubscription(RelayEnvironment.get(), config);
+  requestSubscription(Relay.environment, config);
 };

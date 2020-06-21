@@ -249,7 +249,7 @@ const SignInEmailMutation = graphql`
 `;
 
 function SignIn(props: Props): React.ReactElement {
-  const { setUser } = useAppContext();
+  const { setUser } = useAuthContext();
 	...
   const [commit, isInFlight] = useMutation<SignInMutation>(SignInEmailMutation);
 
@@ -308,7 +308,7 @@ function Home(props: Props): React.ReactElement {
   const fadeAnim = React.useRef(new Animated.Value(0)).current;
   const {
     state: { user },
-  } = useAppContext();
+  } = useAuthContext();
 
   // Subscription
   const subscriptionConfig = React.useMemo(() => {

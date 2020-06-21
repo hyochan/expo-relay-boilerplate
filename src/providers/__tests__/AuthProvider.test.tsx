@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { AppProvider, useAppContext } from '../AppProvider';
+import { AuthProvider, useAuthContext } from '../AuthProvider';
 import { Button, Text, View } from 'react-native';
 import {
   RenderResult,
@@ -15,7 +15,7 @@ import renderer from 'react-test-renderer';
 let testingLib: RenderResult;
 
 const FakeChild = (): React.ReactElement => {
-  const { state, resetUser, callDefault } = useAppContext();
+  const { state, resetUser } = useAuthContext();
 
   return (
     <View>
@@ -27,23 +27,16 @@ const FakeChild = (): React.ReactElement => {
         }}
         title="Button"
       />
-      <Button
-        testID="BUTTON_NOT_VALID"
-        onPress={(): void => {
-          callDefault();
-        }}
-        title="Button"
-      />
     </View>
   );
 };
 
-describe('[AppProvider] rendering test', () => {
+describe('[AuthProvider] rendering test', () => {
   let json: renderer.ReactTestRendererJSON;
   const component = (
-    <AppProvider>
+    <AuthProvider>
       <FakeChild />
-    </AppProvider>
+    </AuthProvider>
   );
 
   it('should match component and snapshot', () => {
@@ -69,11 +62,11 @@ describe('[AppProvider] rendering test', () => {
   });
 });
 
-describe('[AppProvider] error rendering test', () => {
+describe('[AuthProvider] error rendering test', () => {
   let error: Error;
   const component = <FakeChild />;
 
-  it('should throw error when [AppProvider] is not wrapped', () => {
+  it('should throw error when [AuthProvider] is not wrapped', () => {
     try {
       render(component);
     } catch (e) {

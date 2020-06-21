@@ -1,15 +1,4 @@
-import type {
-  Header_Query,
-  Header_QueryResponse,
-} from './__generated__/Header_Query.graphql';
 import React, { ReactElement } from 'react';
-
-import {
-  graphql,
-  preloadQuery,
-  usePreloadedQuery,
-  useRelayEnvironment,
-} from 'react-relay/hooks';
 import { DrawerNavigationProps } from '../navigation/MainStackNavigator';
 import HeaderRightWidget from '../shared/HeaderRightWidget';
 import styled from 'styled-components/native';
@@ -44,36 +33,14 @@ const Menu = styled.Text`
   font-weight: 600;
 `;
 
-const HeaderQuery = graphql`
-  query Header_Query {
-    me {
-      ...HeaderRightWidget_user
-    }
-  }
-`;
-
 const Header = (props: Props): ReactElement => {
-  const environment = useRelayEnvironment();
-  const queryResult = preloadQuery<Header_Query>(
-    environment,
-    HeaderQuery,
-    {},
-    { fetchPolicy: 'store-and-network' },
-  );
-  const { me }: Header_QueryResponse = usePreloadedQuery<Header_Query>(
-    HeaderQuery,
-    queryResult,
-  );
-
-  console.log('Header rendering', me);
-
   return (
     <Container>
       <React.Suspense fallback={'Header pending...'}>
         <MenuContainer onPress={(): void => props.navigation.toggleDrawer()}>
           <Menu>Menu</Menu>
         </MenuContainer>
-        <HeaderRightWidget user={me} />
+        <HeaderRightWidget />
       </React.Suspense>
     </Container>
   );

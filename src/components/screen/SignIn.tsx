@@ -8,7 +8,7 @@ import Button from '../shared/Button';
 import React from 'react';
 import graphql from 'babel-plugin-relay/macro';
 import styled from 'styled-components/native';
-import { useAppContext } from '../../providers/AppProvider';
+import { useAuthContext } from '../../providers/AuthProvider';
 import { useMutation } from 'react-relay/hooks';
 
 const Container = styled.View`
@@ -73,7 +73,7 @@ const SignInEmailMutation = graphql`
 `;
 
 function SignIn(props: Props): React.ReactElement {
-  const { setUser } = useAppContext();
+  const { setUser } = useAuthContext();
   const [email, setEmail] = React.useState<string>('ethan1@test.com');
   const [password, setPassword] = React.useState<string>('test');
   const [error, setError] = React.useState<string>('');
@@ -111,9 +111,7 @@ function SignIn(props: Props): React.ReactElement {
   };
 
   React.useEffect(() => {
-    return (): void => {
-      // console.log('[AuthStack] unmounted');
-    };
+    console.log('[AuthStack] mounted');
   }, []);
 
   return (

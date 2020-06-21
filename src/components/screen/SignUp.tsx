@@ -9,7 +9,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import { AuthStackNavigationProps } from '../navigation/AuthStackNavigator';
 import Button from '../shared/Button';
 import styled from 'styled-components/native';
-import { useAppContext } from '../../providers/AppProvider';
+import { useAuthContext } from '../../providers/AuthProvider';
 
 const Container = styled.View`
   flex: 1;
@@ -97,7 +97,7 @@ function isValidate(type, value): boolean {
 }
 
 const SignUp: FC<Props> = ({ navigation }) => {
-  const { setUser } = useAppContext();
+  const { setUser } = useAuthContext();
   const [state, setState] = React.useState<State>(initialState);
   const [confirmPassword, setConfirmPassword] = React.useState<string>('');
   const [error, setError] = React.useState<string>('');
