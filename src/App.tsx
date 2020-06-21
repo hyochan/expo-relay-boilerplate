@@ -1,5 +1,5 @@
 import { AppLoading, Asset } from 'expo';
-import React, { useEffect, useState } from 'react';
+import React, { ReactElement, Suspense, useEffect, useState } from 'react';
 import {
   RelayEnvironmentProvider,
   graphql,
@@ -9,11 +9,10 @@ import {
 } from 'react-relay/hooks';
 
 import type { AppUserQuery } from './__generated__/AppUserQuery.graphql';
-
 import ErrorBoundary from './ErrorBoundary';
+
 import Icons from './utils/Icons';
 import { Image } from 'react-native';
-import Relay from './relay';
 import RootNavigator from './components/navigation/RootStackNavigator';
 import RootProvider from './providers';
 import SuspenseScreen from './components/screen/Suspense';
@@ -34,7 +33,7 @@ const loadAssetsAsync = async (): Promise<void> => {
   await Promise.all([...imageAssets]);
 };
 
-const UserQuery = graphql`
+const AppUser = graphql`
   query AppUserQuery {
     me {
       id
@@ -45,29 +44,42 @@ const UserQuery = graphql`
   }
 `;
 
-function App(): React.ReactElement {
-  const userFetchResult = preloadQuery<AppUserQuery>(
-    Relay.environment,
-    UserQuery,
+function App(): ReactElement {
+  const AppUserResult = preloadQuery<AppUserQuery>(
+    useRelayEnvironment(),
+    AppUser,
     {},
-    { fetchPolicy: 'store-and-network' },
+    { fetchPolicy: 'store-or-network' },
   );
-  const userData = usePreloadedQuery<AppUserQuery>(UserQuery, userFetchResult);
+  const { me } = usePreloadedQuery<AppUserQuery>(AppUser, AppUserResult);
 
   const { setUser } = useAuthContext();
 
   useEffect(() => {
-    if (userData.me) {
+    if (me) {
       setUser({
-        ...userData.me,
+        ...me,
       });
     }
-  }, [userData.me]);
+  }, [me]);
 
   return <RootNavigator />;
 }
 
-function ProviderWrapper(): React.ReactElement {
+function RelayEnvironmentWrapper({ children }): ReactElement {
+  const {
+    state: { relay },
+  } = useAuthContext();
+  return (
+    <RelayEnvironmentProvider environment={relay}>
+      <ErrorBoundary fallback={<SuspenseScreen error />}>
+        <Suspense fallback={<SuspenseScreen />}>{children}</Suspense>
+      </ErrorBoundary>
+    </RelayEnvironmentProvider>
+  );
+}
+
+function ProviderWrapper(): ReactElement {
   const [loading, setLoading] = useState(false);
 
   if (loading) {
@@ -80,13 +92,9 @@ function ProviderWrapper(): React.ReactElement {
   }
   return (
     <RootProvider>
-      <RelayEnvironmentProvider environment={Relay.environment}>
-        <ErrorBoundary fallback={<SuspenseScreen error />}>
-          <React.Suspense fallback={<SuspenseScreen />}>
-            <App />
-          </React.Suspense>
-        </ErrorBoundary>
-      </RelayEnvironmentProvider>
+      <RelayEnvironmentWrapper>
+        <App />
+      </RelayEnvironmentWrapper>
     </RootProvider>
   );
 }

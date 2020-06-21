@@ -49,13 +49,12 @@ const FriendQuery = graphql`
 `;
 
 const Friends: FC = () => {
-  // const environment = useRelayEnvironment();
-  const environment = Relay.environment;
+  const environment = useRelayEnvironment();
   const result = preloadQuery<FriendsQuery>(
     environment,
     FriendQuery,
     {},
-    { fetchPolicy: 'network-only' },
+    { fetchPolicy: 'store-or-network' },
   );
 
   const { friends }: FriendsQueryResponse = usePreloadedQuery<FriendsQuery>(

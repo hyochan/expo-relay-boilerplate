@@ -1,14 +1,8 @@
-import { graphql, useFragment } from 'react-relay/hooks';
+import React, { FC } from 'react';
 import Avatar from '../shared/Avatar';
-import type { HeaderRightWidget_user$key } from './__generated__/HeaderRightWidget_user.graphql';
-import React from 'react';
 
 import styled from 'styled-components/native';
 import { useAuthContext } from '../../providers/AuthProvider';
-
-type Props = {
-  user: HeaderRightWidget_user$key | null;
-};
 
 const HeaderRightContainer = styled.View`
   width: 150px;
@@ -23,31 +17,23 @@ const StyledText = styled.Text`
   color: ${({ theme }): string => theme.fontColor};
 `;
 
-function HeaderRightWidget(props: Props): React.ReactElement {
-  const { resetUser } = useAuthContext();
+const HeaderRightWidget: FC = () => {
+  const {
+    state: { user },
+    resetUser,
+  } = useAuthContext();
+
   const handleSignOut = (): void => {
     resetUser();
   };
 
-  const data = useFragment(
-    graphql`
-      fragment HeaderRightWidget_user on User {
-        id
-        email
-        name
-        photoURL
-      }
-    `,
-    props.user,
-  );
-
   return (
     <HeaderRightContainer>
-      <Avatar photoURL={data?.photoURL} onPress={handleSignOut} />
-      <StyledText>{data?.name}</StyledText>
+      <Avatar photoURL={user?.photoURL} onPress={handleSignOut} />
+      <StyledText>{user?.name || 'no-name'}</StyledText>
     </HeaderRightContainer>
   );
-}
+};
 
 HeaderRightWidget.displayName = 'HeaderRightWidget';
 
