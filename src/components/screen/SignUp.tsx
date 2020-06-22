@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import type {
   SignUpMutation,
   SignUpMutationResponse,
-} from './__generated__/SignUpMutation.graphql';
+} from '__generated__/SignUpMutation.graphql';
 import { graphql, useMutation } from 'react-relay/hooks';
 import AsyncStorage from '@react-native-community/async-storage';
 
@@ -59,7 +59,18 @@ const initialState = {
   statusMessage: '',
 };
 
-const SignUpUserMutation = graphql`
+function isValidate(type, value): boolean {
+  const emailRegex = /^[a-zA-Z0-9]+@(?:[a-zA-Z0-9]+\.)+[A-Za-z]+$/;
+  switch (type) {
+    case 'email':
+      return emailRegex.test(String(value).toLowerCase());
+
+    default:
+      return false;
+  }
+}
+
+const SignUpUser = graphql`
   mutation SignUpMutation(
     $email: String!
     $password: String!
@@ -85,17 +96,6 @@ const SignUpUserMutation = graphql`
   }
 `;
 
-function isValidate(type, value): boolean {
-  const emailRegex = /^[a-zA-Z0-9]+@(?:[a-zA-Z0-9]+\.)+[A-Za-z]+$/;
-  switch (type) {
-    case 'email':
-      return emailRegex.test(String(value).toLowerCase());
-
-    default:
-      return false;
-  }
-}
-
 const SignUp: FC<Props> = ({ navigation }) => {
   const { setUser } = useAuthContext();
   const [state, setState] = React.useState<State>(initialState);
@@ -104,7 +104,7 @@ const SignUp: FC<Props> = ({ navigation }) => {
 
   const [isContinue, setContinue] = React.useState<boolean>(false);
 
-  const [commit, isInFlight] = useMutation<SignUpMutation>(SignUpUserMutation);
+  const [commit, isInFlight] = useMutation<SignUpMutation>(SignUpUser);
 
   const mutationConfig = {
     variables: {

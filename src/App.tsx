@@ -8,7 +8,7 @@ import {
   useRelayEnvironment,
 } from 'react-relay/hooks';
 
-import type { AppUserQuery } from './__generated__/AppUserQuery.graphql';
+import type { AppUserQuery } from '__generated__/AppUserQuery.graphql';
 import ErrorBoundary from './ErrorBoundary';
 
 import Icons from './utils/Icons';

@@ -1,7 +1,7 @@
 import type {
   FriendsQuery,
   FriendsQueryResponse,
-} from './__generated__/FriendsQuery.graphql';
+} from '__generated__/FriendsQuery.graphql';
 import React, { FC } from 'react';
 import {
   graphql,

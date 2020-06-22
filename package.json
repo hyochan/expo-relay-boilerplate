@@ -12,8 +12,8 @@
     "eject": "expo eject",
     "test": "node node_modules/jest/bin/jest.js",
     "lint": "eslint src --ext .ts,.tsx,.js,.jsx",
-    "relay": "yarn run relay-compiler --schema schema.graphql --src ./src/ --extensions ts tsx --language typescript --watchman false $@",
-    "relay-watch": "yarn run relay-compiler --schema schema.graphql --src ./src/ --extensions ts tsx --language typescript --watch",
+    "relay": "yarn run relay-compiler --schema schema.graphql --src ./src/ --extensions ts tsx --language typescript --artifactDirectory ./src/__generated__ --watchman false $@",
+    "relay-watch": "yarn run relay-compiler --schema schema.graphql --src ./src/ --extensions ts tsx --language typescript --artifactDirectory ./src/__generated__ --watch",
     "get-graphql-schema": "get-graphql-schema https://hackatalk.azurewebsites.net/graphql > schema.graphql"
   },
   "private": true,

@@ -1,15 +1,14 @@
 import type {
-  SignInMutation,
-  SignInMutationResponse,
-} from './__generated__/SignInMutation.graphql';
+  SignInEmailMutation,
+  SignInEmailMutationResponse,
+} from '__generated__/SignInEmailMutation.graphql';
+import { graphql, useMutation } from 'react-relay/hooks';
 import AsyncStorage from '@react-native-community/async-storage';
 import { AuthStackNavigationProps } from '../navigation/AuthStackNavigator';
 import Button from '../shared/Button';
 import React from 'react';
-import graphql from 'babel-plugin-relay/macro';
 import styled from 'styled-components/native';
 import { useAuthContext } from '../../providers/AuthProvider';
-import { useMutation } from 'react-relay/hooks';
 
 const Container = styled.View`
   flex: 1;
@@ -57,9 +56,8 @@ interface Props {
   navigation: AuthStackNavigationProps<'SignIn'>;
 }
 
-// Define a mutation query
-const SignInEmailMutation = graphql`
-  mutation SignInMutation($email: String!, $password: String!) {
+const SignInEmail = graphql`
+  mutation SignInEmailMutation($email: String!, $password: String!) {
     signInEmail(email: $email, password: $password) {
       token
       user {
@@ -78,14 +76,14 @@ function SignIn(props: Props): React.ReactElement {
   const [password, setPassword] = React.useState<string>('test');
   const [error, setError] = React.useState<string>('');
 
-  const [commit, isInFlight] = useMutation<SignInMutation>(SignInEmailMutation);
+  const [commit, isInFlight] = useMutation<SignInEmailMutation>(SignInEmail);
 
   const mutationConfig = {
     variables: {
       email,
       password,
     },
-    onCompleted: (response: SignInMutationResponse): void => {
+    onCompleted: (response: SignInEmailMutationResponse): void => {
       const { token, user } = response.signInEmail;
       AsyncStorage.setItem('@UserStorage:login_token', token)
         .then(() => {

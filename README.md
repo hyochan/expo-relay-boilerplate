@@ -18,7 +18,6 @@ Also, bare in mind that this boilerplate is built on top of [expo](expo.io) to s
 
 -- By [relay](https://relay.dev)
 
-
 ## Structure
 
 ```
@@ -73,6 +72,10 @@ cd expo-relay/
 
 yarn
 yarn start --web
+
+# In a new terminal
+# Compiler in watch mode, to regenerate code as you modify queries.
+yarn relay-watch
 ```
 
 ## Usage
@@ -183,20 +186,20 @@ Hook used to access data fetched by an earlier call to `preloadQuery` This imple
 `usePreloadedQuery` will suspend if the query is still pending, throw an error if it failed, and otherwise return the query results.
 
 ```tsx
-// Friends.tsx 
+// Friends.tsx
 
 import { graphql, useRalyEnvironment, usePreloadQuery, preloadQuery } from 'react-relay/hooks';
 
 const Friends: FC = (): React.ReactElement => {
   const environment = useRelayEnvironment();
 
-	const FriendQuery = graphql`
-	  query FriendsQuery {
-	    friends {
-	      ...Friend_user
-	    }
-	  }
-	`;
+ const FriendQuery = graphql`
+   query FriendsQuery {
+     friends {
+       ...Friend_user
+     }
+   }
+ `;
 
   const result = preloadQuery<FriendsQuery>(
     environment,
@@ -250,12 +253,12 @@ const SignInEmailMutation = graphql`
 
 function SignIn(props: Props): React.ReactElement {
   const { setUser } = useAuthContext();
-	...
+ ...
   const [commit, isInFlight] = useMutation<SignInMutation>(SignInEmailMutation);
 
   const mutationConfig = {
     variables: {
-			...
+   ...
     },
     onCompleted: (response: SignInMutationResponse): void => {
       const { token, user } = response.signInEmail;
@@ -275,7 +278,7 @@ function SignIn(props: Props): React.ReactElement {
 
   return (
     <Container>
-			...
+   ...
       <Button
         testID="btn-back"
         onClick={(): void => commit(mutationConfig)}
@@ -338,8 +341,8 @@ function Home(props: Props): React.ReactElement {
 
   return (
     <Container>
-			...
-			{* This will show if the user signin on another environment *}
+   ...
+   {* This will show if the user signin on another environment *}
       <Animated.View
         style={{...}}
       >
@@ -353,6 +356,6 @@ function Home(props: Props): React.ReactElement {
 ## Todo
 
 - [ ]  Describe how to integrate relay to this app
-- [ ]  Update script and describe how to use it
-- [ ]  Resolve cache invalidation when `signout`
+- [x]  Update script and describe how to use it
+- [x]  Resolve cache invalidation when `signout`
 - [ ]  Replace graphql server URL
