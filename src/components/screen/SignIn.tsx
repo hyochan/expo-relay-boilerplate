@@ -2,14 +2,13 @@ import type {
   SignInEmailMutation,
   SignInEmailMutationResponse,
 } from '__generated__/SignInEmailMutation.graphql';
+import { graphql, useMutation } from 'react-relay/hooks';
 import AsyncStorage from '@react-native-community/async-storage';
 import { AuthStackNavigationProps } from '../navigation/AuthStackNavigator';
 import Button from '../shared/Button';
 import React from 'react';
-import { SignInEmail } from '../../relay/mutations/SignInEmailMutation';
 import styled from 'styled-components/native';
 import { useAuthContext } from '../../providers/AuthProvider';
-import { useMutation } from 'react-relay/hooks';
 
 const Container = styled.View`
   flex: 1;
@@ -56,6 +55,20 @@ const ErrorMessage = styled(StyledText)`
 interface Props {
   navigation: AuthStackNavigationProps<'SignIn'>;
 }
+
+const SignInEmail = graphql`
+  mutation SignInEmailMutation($email: String!, $password: String!) {
+    signInEmail(email: $email, password: $password) {
+      token
+      user {
+        id
+        email
+        name
+        photoURL
+      }
+    }
+  }
+`;
 
 function SignIn(props: Props): React.ReactElement {
   const { setUser } = useAuthContext();

@@ -3,14 +3,13 @@ import type {
   SignUpMutation,
   SignUpMutationResponse,
 } from '__generated__/SignUpMutation.graphql';
+import { graphql, useMutation } from 'react-relay/hooks';
 import AsyncStorage from '@react-native-community/async-storage';
 
 import { AuthStackNavigationProps } from '../navigation/AuthStackNavigator';
 import Button from '../shared/Button';
-import { SignUpUser } from '../../relay/mutations/SignUpMutation';
 import styled from 'styled-components/native';
 import { useAuthContext } from '../../providers/AuthProvider';
-import { useMutation } from 'react-relay/hooks';
 
 const Container = styled.View`
   flex: 1;
@@ -70,6 +69,32 @@ function isValidate(type, value): boolean {
       return false;
   }
 }
+
+const SignUpUser = graphql`
+  mutation SignUpMutation(
+    $email: String!
+    $password: String!
+    $name: String
+    $statusMessage: String
+  ) {
+    signUp(
+      user: {
+        email: $email
+        password: $password
+        name: $name
+        statusMessage: $statusMessage
+      }
+    ) {
+      token
+      user {
+        id
+        email
+        name
+        photoURL
+      }
+    }
+  }
+`;
 
 const SignUp: FC<Props> = ({ navigation }) => {
   const { setUser } = useAuthContext();

@@ -2,13 +2,13 @@ import { AppLoading, Asset } from 'expo';
 import React, { ReactElement, Suspense, useEffect, useState } from 'react';
 import {
   RelayEnvironmentProvider,
+  graphql,
   preloadQuery,
   usePreloadedQuery,
   useRelayEnvironment,
 } from 'react-relay/hooks';
 
-import { AuthUser } from './relay/queries/AuthUserQuery';
-import type { AuthUserQuery } from '__generated__/AuthUserQuery.graphql';
+import type { AppUserQuery } from '__generated__/AppUserQuery.graphql';
 import ErrorBoundary from './ErrorBoundary';
 
 import Icons from './utils/Icons';
@@ -33,14 +33,25 @@ const loadAssetsAsync = async (): Promise<void> => {
   await Promise.all([...imageAssets]);
 };
 
+const AppUser = graphql`
+  query AppUserQuery {
+    me {
+      id
+      email
+      name
+      photoURL
+    }
+  }
+`;
+
 function App(): ReactElement {
-  const AuthUserResult = preloadQuery<AuthUserQuery>(
+  const AppUserResult = preloadQuery<AppUserQuery>(
     useRelayEnvironment(),
-    AuthUser,
+    AppUser,
     {},
     { fetchPolicy: 'store-or-network' },
   );
-  const { me } = usePreloadedQuery<AuthUserQuery>(AuthUser, AuthUserResult);
+  const { me } = usePreloadedQuery<AppUserQuery>(AppUser, AppUserResult);
 
   const { setUser } = useAuthContext();
 
