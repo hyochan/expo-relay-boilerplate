@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { graphql, useFragment } from 'react-relay/hooks';
 import Avatar from './Avatar';
-import type { Friend_user$key } from './__generated__/Friend_user.graphql';
+import type { Friend_user$key } from '__generated__/Friend_user.graphql';
 import styled from 'styled-components/native';
 
 const Container = styled.View`

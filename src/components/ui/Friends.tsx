@@ -1,7 +1,7 @@
 import type {
   FriendsQuery,
   FriendsQueryResponse,
-} from './__generated__/FriendsQuery.graphql';
+} from '__generated__/FriendsQuery.graphql';
 import React, { FC } from 'react';
 import {
   graphql,
@@ -10,7 +10,6 @@ import {
   useRelayEnvironment,
 } from 'react-relay/hooks';
 import Friend from '../shared/Friend';
-import Relay from '../../relay';
 import styled from 'styled-components/native';
 
 const Container = styled.View`
