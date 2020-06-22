@@ -2,14 +2,15 @@ import React, { FC } from 'react';
 import type {
   SignUpMutation,
   SignUpMutationResponse,
-} from './__generated__/SignUpMutation.graphql';
-import { graphql, useMutation } from 'react-relay/hooks';
+} from '__generated__/SignUpMutation.graphql';
 import AsyncStorage from '@react-native-community/async-storage';
 
 import { AuthStackNavigationProps } from '../navigation/AuthStackNavigator';
 import Button from '../shared/Button';
+import { SignUpUser } from '../../relay/mutations/SignUpMutation';
 import styled from 'styled-components/native';
 import { useAuthContext } from '../../providers/AuthProvider';
+import { useMutation } from 'react-relay/hooks';
 
 const Container = styled.View`
   flex: 1;
@@ -59,32 +60,6 @@ const initialState = {
   statusMessage: '',
 };
 
-const SignUpUserMutation = graphql`
-  mutation SignUpMutation(
-    $email: String!
-    $password: String!
-    $name: String
-    $statusMessage: String
-  ) {
-    signUp(
-      user: {
-        email: $email
-        password: $password
-        name: $name
-        statusMessage: $statusMessage
-      }
-    ) {
-      token
-      user {
-        id
-        email
-        name
-        photoURL
-      }
-    }
-  }
-`;
-
 function isValidate(type, value): boolean {
   const emailRegex = /^[a-zA-Z0-9]+@(?:[a-zA-Z0-9]+\.)+[A-Za-z]+$/;
   switch (type) {
@@ -104,7 +79,7 @@ const SignUp: FC<Props> = ({ navigation }) => {
 
   const [isContinue, setContinue] = React.useState<boolean>(false);
 
-  const [commit, isInFlight] = useMutation<SignUpMutation>(SignUpUserMutation);
+  const [commit, isInFlight] = useMutation<SignUpMutation>(SignUpUser);
 
   const mutationConfig = {
     variables: {
