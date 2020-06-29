@@ -1,7 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage';
 import { GraphQLResponse } from 'relay-runtime';
-
-const FETCH_URL = 'https://hackatalk.azurewebsites.net/graphql';
+import { URL } from '../../config';
 
 async function fetchGraphQL(request, variables): Promise<GraphQLResponse> {
   console.log(
@@ -22,7 +21,9 @@ async function fetchGraphQL(request, variables): Promise<GraphQLResponse> {
       variables,
     }),
   };
-  return fetch(FETCH_URL, fetchConfig).then((response) => response.json());
+  return fetch(URL.GRAPHQL_FETCH, fetchConfig).then((response) =>
+    response.json(),
+  );
 }
 
 export default fetchGraphQL;

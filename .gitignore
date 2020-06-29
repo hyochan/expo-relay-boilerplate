@@ -18,3 +18,6 @@ yarn-error*
 
 # relay
 **/__generated__/**
+
+# boilerplate
+config.ts

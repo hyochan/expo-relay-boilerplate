@@ -1,13 +1,11 @@
 import { Disposable, GraphQLResponse, Observable } from 'relay-runtime';
 import { RelayObservable } from 'relay-runtime/lib/network/RelayObservable';
-
 import { SubscriptionClient } from 'subscriptions-transport-ws';
+import { URL } from '../../config';
 
 export type SubscribeFunction = RelayObservable<GraphQLResponse> | Disposable;
 
-const SUBSCRIPTION_URL = 'ws://hackatalk.azurewebsites.net/graphql';
-
-const subscriptionClient = new SubscriptionClient(SUBSCRIPTION_URL, {
+const subscriptionClient = new SubscriptionClient(URL.GRAPHQL_SUBSCRIBE, {
   reconnect: true,
 });
 
