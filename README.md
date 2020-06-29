@@ -64,7 +64,7 @@ app/
 └─ yarn.lock
 ```
 
-## Getting started
+## INSTALL
 
 ```bash
 git clone https://github.com/dooboolab/expo-relay.git
@@ -76,6 +76,22 @@ yarn start --web
 # In a new terminal
 # Compiler in watch mode, to regenerate code as you modify queries.
 yarn relay-watch
+```
+
+## CONFIG
+
+You can configure environment by modifying config.sample.ts to config.ts.
+
+```bash
+cp config.sample.ts config.ts
+```
+
+```typescript
+// config.ts
+export const URL = {
+  GRAPHQL_FETCH: 'GRAPHQL_FETCH_URL',
+  GRAPHQL_SUBSCRIBE: 'GRAPHQL_SUBSCRIBE_URL',
+};
 ```
 
 ## Usage
@@ -115,7 +131,7 @@ function fetchFunction(
   return AsyncStorage.getItem('@UserStorage:login_token').then((token) => {
     return fetchGraphQL(request, variables, cacheConfig, token);
   });
-};
+}
 
 function subscribeFunction(
   request: RequestParameters,
@@ -123,7 +139,7 @@ function subscribeFunction(
   cacheConfig: CacheConfig,
 ): SubscribeFunction {
   return subscribeGraphQL(request, variables, cacheConfig);
-};
+}
 
 export default new Environment({
   network: Network.create(fetchFunction, subscribeFunction),
@@ -188,18 +204,23 @@ Hook used to access data fetched by an earlier call to `preloadQuery` This imple
 ```tsx
 // Friends.tsx
 
-import { graphql, useRalyEnvironment, usePreloadQuery, preloadQuery } from 'react-relay/hooks';
+import {
+  graphql,
+  useRalyEnvironment,
+  usePreloadQuery,
+  preloadQuery,
+} from 'react-relay/hooks';
 
 const Friends: FC = (): React.ReactElement => {
   const environment = useRelayEnvironment();
 
- const FriendQuery = graphql`
-   query FriendsQuery {
-     friends {
-       ...Friend_user
-     }
-   }
- `;
+  const FriendQuery = graphql`
+    query FriendsQuery {
+      friends {
+        ...Friend_user
+      }
+    }
+  `;
 
   const result = preloadQuery<FriendsQuery>(
     environment,
@@ -355,7 +376,7 @@ function Home(props: Props): React.ReactElement {
 
 ## Todo
 
-- [ ]  Describe how to integrate relay to this app
-- [x]  Update script and describe how to use it
-- [x]  Resolve cache invalidation when `signout`
-- [ ]  Replace graphql server URL
+- [ ] Describe how to integrate relay to this app
+- [x] Update script and describe how to use it
+- [x] Resolve cache invalidation when `signout`
+- [x] Replace graphql server URL
