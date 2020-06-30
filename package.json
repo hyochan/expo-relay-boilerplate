@@ -12,9 +12,9 @@
     "eject": "expo eject",
     "test": "node node_modules/jest/bin/jest.js",
     "lint": "eslint src --ext .ts,.tsx,.js,.jsx",
-    "relay": "yarn run relay-compiler --schema schema.graphql --src ./src/ --extensions ts tsx --language typescript --artifactDirectory ./src/__generated__ --watchman false $@",
-    "relay-watch": "yarn run relay-compiler --schema schema.graphql --src ./src/ --extensions ts tsx --language typescript --artifactDirectory ./src/__generated__ --watch",
-    "get-graphql-schema": "get-graphql-schema https://hackatalk.azurewebsites.net/graphql > schema.graphql"
+    "relay": "yarn run relay-compiler --schema src/relay/schema.graphql --src ./src/ --extensions ts tsx --language typescript --artifactDirectory ./src/__generated__ --watchman false $@",
+    "relay-watch": "yarn run relay-compiler --schema src/relay/schema.graphql --src ./src/ --extensions ts tsx --language typescript --artifactDirectory ./src/__generated__ --watch",
+    "get-graphql-schema": "get-graphql-schema https://hackatalk.azurewebsites.net/graphql > src/relay/schema.graphql"
   },
   "private": true,
   "version": "0.0.0",
@@ -88,8 +88,10 @@
     "react-test-renderer": "^16.13.1",
     "relay-compiler": "^9.1.0",
     "relay-compiler-language-typescript": "^12.0.2",
+    "relay-test-utils": "^9.1.0",
     "ts-jest": "^25.5.1",
     "tslib": "^1.11.2",
-    "typescript": "^3.8.3"
+    "typescript": "^3.8.3",
+    "ws": "^7.3.0"
   }
 }

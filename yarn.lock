@@ -12654,6 +12654,15 @@ relay-runtime@9.1.0:
     "@babel/runtime" "^7.0.0"
     fbjs "^1.0.0"
 
+relay-test-utils@^9.1.0:
+  version "9.1.0"
+  resolved "https://registry.yarnpkg.com/relay-test-utils/-/relay-test-utils-9.1.0.tgz#b516a96c47f905e73f5a577df24d0195f2a65ea6"
+  integrity sha512-fTgtLbV/7nXD9u/Ujevc9ohRaZpsQBtvJogh076bUB+Vcvv4G9TQ1oZLKLXxJTBcnQEEzrgzLHGjrxVGRb548A==
+  dependencies:
+    "@babel/runtime" "^7.0.0"
+    fbjs "^1.0.0"
+    relay-runtime "9.1.0"
+
 remove-trailing-separator@^1.0.1:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/remove-trailing-separator/-/remove-trailing-separator-1.1.0.tgz#c24bce2a283adad5bc3f58e0d48249b92379d8ef"
@@ -14617,7 +14626,7 @@ ws@^5.2.0:
   dependencies:
     async-limiter "~1.0.0"
 
-ws@^7.0.0:
+ws@^7.0.0, ws@^7.3.0:
   version "7.3.0"
   resolved "https://registry.yarnpkg.com/ws/-/ws-7.3.0.tgz#4b2f7f219b3d3737bc1a2fbf145d825b94d38ffd"
   integrity sha512-iFtXzngZVXPGgpTlP1rBqsUK82p9tKqsWRPg5L56egiljujJT3vGAYnHANvFxBieXrTFavhzhxW52jnaWV+w2w==
