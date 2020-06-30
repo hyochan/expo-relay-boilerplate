@@ -2,27 +2,24 @@ import 'react-native';
 
 import React, { ReactElement } from 'react';
 
-import RootProvider from '../src/providers';
+import TestProvider from '../src/providers/TestProvider';
 import { ThemeType } from '../src/providers/ThemeProvider';
 
 export const createTestElement = (
   child: ReactElement,
   themeType?: ThemeType,
 ): ReactElement => (
-  <RootProvider initialThemeType={themeType}>{child}</RootProvider>
+  <TestProvider initialThemeType={themeType}>{child}</TestProvider>
 );
 
 export const createTestProps = (
-  obj?: object,
-  moreScreenProps?: object,
-): object | unknown | any => ({
+  obj: Record<string, unknown> = {},
+): Record<string, unknown> | unknown | any => ({
   navigation: {
     navigate: jest.fn(),
     goBack: jest.fn(),
-  },
-  screenProps: {
-    changeThemeType: jest.fn(),
-    ...moreScreenProps,
+    replace: jest.fn(),
+    setOptions: jest.fn(),
   },
   ...obj,
 });
