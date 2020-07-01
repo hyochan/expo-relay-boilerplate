@@ -129,12 +129,14 @@ function SignIn(props: Props): React.ReactElement {
         }}
       />
       <StyledTextInput
+        testID="input-email"
         value={email}
         onChangeText={(value: string): void => setEmail(value)}
         textContentType="emailAddress"
         placeholder="email"
       />
       <StyledTextInput
+        testID="input-password"
         value={password}
         onChangeText={(value: string): void => setPassword(value)}
         textContentType="password"
@@ -143,7 +145,7 @@ function SignIn(props: Props): React.ReactElement {
       />
       <ErrorMessage numberOfLines={1}>{error}</ErrorMessage>
       <Button
-        testID="btn-back"
+        testID="btn-signin"
         onClick={handleClick}
         text={'SignIn'}
         isLoading={isInFlight}

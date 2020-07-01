@@ -1,12 +1,11 @@
 import React, { ReactElement, Suspense } from 'react';
+import { RelayMockEnvironment, createMockEnvironment } from 'relay-test-utils';
 import { ThemeProvider, ThemeType } from '../providers/ThemeProvider';
 import { AuthProvider } from './AuthProvider';
 import { Environment } from 'relay-runtime';
-// import { LoadingIndicator } from 'dooboo-ui';
 import ErrorBoundary from '../ErrorBoundary';
 import { RelayEnvironmentProvider } from 'react-relay/hooks';
 import SuspenseScreen from '../components/screen/Suspense';
-import { createMockEnvironment } from 'relay-test-utils';
 
 interface Props {
   initialThemeType?: ThemeType;
@@ -17,7 +16,7 @@ interface RelayProvidersProps {
   children?: React.ReactElement;
 }
 
-export const environment: Environment = createMockEnvironment();
+export const environment: RelayMockEnvironment = createMockEnvironment();
 
 const RelayProviderWrapper = ({
   children,
