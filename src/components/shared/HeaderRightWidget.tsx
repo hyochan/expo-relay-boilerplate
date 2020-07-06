@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
-import Avatar from '../shared/Avatar';
 
+import Avatar from './Avatar';
 import styled from 'styled-components/native';
 import { useAuthContext } from '../../providers/AuthProvider';
 

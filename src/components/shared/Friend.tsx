@@ -20,11 +20,10 @@ const Container = styled.View`
 
 const StatusDot = styled.View`
   position: absolute;
-  top: calc(50% - 7.5px);
   right: 10px;
   width: 15px;
   height: 15px;
-  border-radius: 50%;
+  border-radius: 7.5px;
   background-color: ${(props): string =>
     props.online ? '#13AB55' : '#E65C5C'};
 `;
