@@ -1,8 +1,10 @@
 import React, { ReactElement } from 'react';
+
 import styled from 'styled-components/native';
 
 interface Props {
   error?: boolean;
+  message?: string;
 }
 
 const Container = styled.View`
@@ -18,10 +20,10 @@ const StyledText = styled.Text`
   color: #fff;
 `;
 
-const SuspenseScreen = ({ error }: Props): ReactElement => {
+const SuspenseScreen = ({ error, message }: Props): ReactElement => {
   return (
     <Container error={error}>
-      <StyledText>{error ? 'Error' : 'Suspense'}</StyledText>
+      <StyledText>{error ? 'Error' : message || 'Suspense'}</StyledText>
     </Container>
   );
 };

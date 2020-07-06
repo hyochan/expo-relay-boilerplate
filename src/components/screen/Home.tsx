@@ -6,6 +6,7 @@ import { DrawerNavigationProps } from '../navigation/MainStackNavigator';
 import Friends from '../ui/Friends';
 import Header from '../shared/Header';
 import { RecordSourceSelectorProxy } from 'relay-runtime';
+import Suspense from './Suspense';
 import styled from 'styled-components/native';
 import { useAuthContext } from '../../providers/AuthProvider';
 
@@ -85,7 +86,7 @@ function Home(props: Props): React.ReactElement {
 
   return (
     <Container>
-      <React.Suspense fallback={'Home fallback...'}>
+      <React.Suspense fallback={<Suspense message="Home fallback..." />}>
         <Header {...props} />
         <Friends />
         <Animated.View

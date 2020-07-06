@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
+import styled, { css } from 'styled-components/native';
 
-import styled from 'styled-components/native';
+import Constants from 'expo-constants';
 
 interface Props {
   photoURL: string | undefined | null;
@@ -10,15 +11,19 @@ interface Props {
 const Container = styled.TouchableOpacity`
   width: 50px;
   height: 50px;
-  border-radius: 50%;
+  border-radius: 25px;
   margin-left: 5px;
   margin-right: 5px;
-  cursor: ${(props: Props): string => (props.onPress ? 'pointer' : 'initial')};
+  ${Constants.platform?.web &&
+  css`
+    cursor: ${(props: Props): string =>
+      props.onPress ? 'pointer' : 'initial'};
+  `};
 `;
 const StyledImage = styled.Image`
   width: 100%;
   height: 100%;
-  border-radius: 50%;
+  border-radius: 25px;
 `;
 
 export default function Avatar(props: Props): React.ReactElement {

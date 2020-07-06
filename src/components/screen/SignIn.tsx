@@ -3,11 +3,12 @@ import type {
   SignInEmailMutationResponse,
 } from '__generated__/SignInEmailMutation.graphql';
 import { graphql, useMutation } from 'react-relay/hooks';
+import styled, { css } from 'styled-components/native';
 import AsyncStorage from '@react-native-community/async-storage';
 import { AuthStackNavigationProps } from '../navigation/AuthStackNavigator';
 import Button from '../shared/Button';
+import Constants from 'expo-constants';
 import React from 'react';
-import styled from 'styled-components/native';
 import { useAuthContext } from '../../providers/AuthProvider';
 
 const Container = styled.View`
@@ -18,10 +19,18 @@ const Container = styled.View`
   justify-content: center;
 `;
 
+const WebCss = css`
+  cursor: pointer;
+`;
+const MobileCssForSignupText = css`
+  /* cursor: pointer; */
+`;
+
 const StyledImage = styled.Image`
   border-radius: 15px;
   align-self: center;
   margin: 25px;
+  ${Constants.platform?.web ? WebCss : MobileCssForSignupText};
 `;
 
 const StyledTextInput = styled.TextInput`
@@ -45,7 +54,6 @@ const StyledText = styled.Text`
 const SignupText = styled(StyledText)`
   color: #373d78;
   text-decoration: underline;
-  cursor: pointer;
 `;
 
 const ErrorMessage = styled(StyledText)`

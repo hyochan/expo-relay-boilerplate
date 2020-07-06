@@ -1,4 +1,5 @@
 import React, { ReactElement } from 'react';
+
 import { DrawerNavigationProps } from '../navigation/MainStackNavigator';
 import HeaderRightWidget from '../shared/HeaderRightWidget';
 import styled from 'styled-components/native';
@@ -36,12 +37,10 @@ const Menu = styled.Text`
 const Header = (props: Props): ReactElement => {
   return (
     <Container>
-      <React.Suspense fallback={'Header pending...'}>
-        <MenuContainer onPress={(): void => props.navigation.toggleDrawer()}>
-          <Menu>Menu</Menu>
-        </MenuContainer>
-        <HeaderRightWidget />
-      </React.Suspense>
+      <MenuContainer onPress={(): void => props.navigation.toggleDrawer()}>
+        <Menu>Menu</Menu>
+      </MenuContainer>
+      <HeaderRightWidget />
     </Container>
   );
 };
