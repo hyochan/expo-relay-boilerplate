@@ -22,7 +22,7 @@ const Container = styled.View`
 const WebCss = css`
   cursor: pointer;
 `;
-const MobileCssForSignupText = css`
+const MobileCss = css`
   /* cursor: pointer; */
 `;
 
@@ -30,7 +30,7 @@ const StyledImage = styled.Image`
   border-radius: 15px;
   align-self: center;
   margin: 25px;
-  ${Constants.platform?.web ? WebCss : MobileCssForSignupText};
+  ${Constants.platform?.web ? WebCss : MobileCss};
 `;
 
 const StyledTextInput = styled.TextInput`
