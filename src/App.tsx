@@ -2,10 +2,8 @@ import { AppLoading, Asset } from 'expo';
 import React, { ReactElement, Suspense, useEffect, useState } from 'react';
 import {
   RelayEnvironmentProvider,
+  fetchQuery,
   graphql,
-  preloadQuery,
-  usePreloadedQuery,
-  useRelayEnvironment,
 } from 'react-relay/hooks';
 
 import type { AppUserQuery } from '__generated__/AppUserQuery.graphql';
@@ -13,6 +11,7 @@ import ErrorBoundary from './ErrorBoundary';
 
 import Icons from './utils/Icons';
 import { Image } from 'react-native';
+import Relay from './relay';
 import RootNavigator from './components/navigation/RootStackNavigator';
 import RootProvider from './providers';
 import SuspenseScreen from './components/screen/Suspense';
@@ -33,35 +32,29 @@ const loadAssetsAsync = async (): Promise<void> => {
   await Promise.all([...imageAssets]);
 };
 
-const AppUser = graphql`
-  query AppUserQuery {
-    me {
-      id
-      email
-      name
-      photoURL
-    }
-  }
-`;
-
 function App(): ReactElement {
-  const AppUserResult = preloadQuery<AppUserQuery>(
-    useRelayEnvironment(),
-    AppUser,
-    {},
-    { fetchPolicy: 'store-or-network' },
-  );
-  const { me } = usePreloadedQuery<AppUserQuery>(AppUser, AppUserResult);
-
   const { setUser } = useAuthContext();
 
   useEffect(() => {
-    if (me) {
-      setUser({
-        ...me,
-      });
-    }
-  }, [me]);
+    fetchQuery<AppUserQuery>(
+      Relay.environment,
+      graphql`
+        query AppUserQuery {
+          me {
+            id
+            email
+            name
+            photoURL
+          }
+        }
+      `,
+      {},
+    ).subscribe({
+      next: (data) => {
+        if (data.me) setUser({ ...data.me });
+      },
+    });
+  }, []);
 
   return <RootNavigator />;
 }
