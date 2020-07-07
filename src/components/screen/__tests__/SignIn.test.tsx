@@ -5,6 +5,7 @@ import {
   RenderResult,
   fireEvent,
   render,
+  wait,
   waitForElement,
 } from '@testing-library/react-native';
 import { createTestElement, createTestProps } from '../../../../test/testUtils';
@@ -75,8 +76,6 @@ describe('[SignIn] interaction', () => {
   describe('about signin submit action', () => {
     beforeAll(() => {
       testingLib = render(component);
-    });
-    it('should make request to signin when button has pressed and navigation switchs to [MainStack]', async () => {
       jest.spyOn(AsyncStorage, 'setItem').mockImplementation(jest.fn());
       jest.spyOn(AuthContext, 'useAuthContext').mockImplementation(() => ({
         state: {
@@ -91,7 +90,8 @@ describe('[SignIn] interaction', () => {
         }),
         resetUser: jest.fn(),
       }));
-
+    });
+    it('should make request to signin when button has pressed and navigation switchs to [MainStack]', async () => {
       const emailText = testingLib.getByTestId('input-email');
       await waitForElement(() => emailText);
 
@@ -111,17 +111,38 @@ describe('[SignIn] interaction', () => {
 
       act(() => {
         fireEvent.press(signinBtn);
+        environment.mock.resolveMostRecentOperation((operation) =>
+          MockPayloadGenerator.generate(operation),
+        );
+      });
+    });
+
+    it('should fail request to signin when button has pressed with wrong info', async () => {
+      const emailText = testingLib.getByTestId('input-email');
+      await waitForElement(() => emailText);
+
+      act(() => {
+        fireEvent.changeText(emailText, 'wrong-email@email.com');
       });
 
-      const operation = environment.mock.getMostRecentOperation();
-      environment.mock.resolve(
-        operation,
-        MockPayloadGenerator.generate(operation),
-      );
+      const passwordText = testingLib.getByTestId('input-password');
+      await waitForElement(() => passwordText);
 
-      // environment.mock.resolveMostRecentOperation((operation) =>
-      //   MockPayloadGenerator.generate(operation),
-      // );
+      act(() => {
+        fireEvent.changeText(passwordText, 'wrong-password');
+      });
+
+      const signinBtn = testingLib.getByTestId('btn-signin');
+      await waitForElement(() => signinBtn);
+
+      act(() => {
+        fireEvent.press(signinBtn);
+        environment.mock.rejectMostRecentOperation(new Error('reject'));
+      });
+
+      const errorText = testingLib.getByTestId('error-text');
+      await act(() => wait());
+      expect(errorText).toBeTruthy();
     });
   });
 
