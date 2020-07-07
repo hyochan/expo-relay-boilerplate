@@ -1,6 +1,7 @@
 import React, { ReactElement, Suspense } from 'react';
 import { RelayMockEnvironment, createMockEnvironment } from 'relay-test-utils';
 import { ThemeProvider, ThemeType } from '../providers/ThemeProvider';
+
 import { AuthProvider } from './AuthProvider';
 import { Environment } from 'relay-runtime';
 import ErrorBoundary from '../ErrorBoundary';

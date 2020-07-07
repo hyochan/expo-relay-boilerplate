@@ -1,9 +1,37 @@
 import 'react-native';
 
-import React, { ReactElement } from 'react';
+import React, { ReactElement, Suspense } from 'react';
+import { RelayMockEnvironment, createMockEnvironment } from 'relay-test-utils';
+import { ThemeProvider, ThemeType } from '../src/providers/ThemeProvider';
 
+import { AuthProvider } from '../src/providers/AuthProvider';
+import ErrorBoundary from '../src/ErrorBoundary';
+import { RelayEnvironmentProvider } from 'react-relay/hooks';
+import SuspenseScreen from '../src/components/screen/Suspense';
 import TestProvider from '../src/providers/TestProvider';
-import { ThemeType } from '../src/providers/ThemeProvider';
+
+interface Props {
+  initialThemeType?: ThemeType;
+  children?: React.ReactElement;
+}
+
+interface RelayProvidersProps {
+  children?: React.ReactElement;
+}
+
+const environment: RelayMockEnvironment = createMockEnvironment();
+
+const RelayProviderWrapper = ({
+  children,
+}: RelayProvidersProps): ReactElement => {
+  return (
+    <RelayEnvironmentProvider environment={environment}>
+      <ErrorBoundary fallback={<SuspenseScreen error />}>
+        <Suspense fallback={<SuspenseScreen />}>{children}</Suspense>
+      </ErrorBoundary>
+    </RelayEnvironmentProvider>
+  );
+};
 
 export const createTestElement = (
   child: ReactElement,
@@ -23,3 +51,16 @@ export const createTestProps = (
   },
   ...obj,
 });
+
+export const createTestProvider = ({
+  initialThemeType = ThemeType.LIGHT,
+  children,
+}: Props): React.ReactElement => {
+  return (
+    <ThemeProvider initialThemeType={initialThemeType}>
+      <AuthProvider>
+        <RelayProviderWrapper>{children}</RelayProviderWrapper>
+      </AuthProvider>
+    </ThemeProvider>
+  );
+};
