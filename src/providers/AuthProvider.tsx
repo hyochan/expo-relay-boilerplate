@@ -1,7 +1,6 @@
 import React, { useReducer } from 'react';
+import AsyncStorage from '@react-native-community/async-storage';
 import { Environment } from 'relay-runtime';
-
-import { AsyncStorage } from 'react-native';
 import Relay from '../relay';
 import { User } from '../types';
 import createCtx from '../utils/createCtx';
@@ -86,4 +85,10 @@ function AuthProvider(props: Props): React.ReactElement {
   return <Provider value={{ state, ...actions }}>{props.children}</Provider>;
 }
 
+const AuthContext = {
+  useAuthContext: useCtx,
+  AuthProvider,
+};
+
 export { useCtx as useAuthContext, AuthProvider };
+export default AuthContext;

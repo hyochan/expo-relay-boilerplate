@@ -1,0 +1,195 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`[SignIn] rendering test should render without crashing 1`] = `
+<View
+  pointerEvents="box-none"
+  style={
+    Object {
+      "flex": 1,
+    }
+  }
+>
+  <View
+    collapsable={true}
+    pointerEvents="box-none"
+    style={
+      Object {
+        "flex": 1,
+      }
+    }
+  >
+    <View
+      style={
+        Array [
+          Object {
+            "alignItems": "center",
+            "backgroundColor": "white",
+            "flexBasis": 0,
+            "flexDirection": "column",
+            "flexGrow": 1,
+            "flexShrink": 1,
+            "justifyContent": "center",
+          },
+        ]
+      }
+    >
+      <Image
+        source={
+          Object {
+            "uri": "https://avatars2.githubusercontent.com/u/45788556?s=200&v=4",
+          }
+        }
+        style={
+          Array [
+            Object {
+              "alignSelf": "center",
+              "borderRadius": 15,
+              "marginBottom": 25,
+              "marginLeft": 25,
+              "marginRight": 25,
+              "marginTop": 25,
+            },
+            Object {
+              "height": 150,
+              "width": 150,
+            },
+          ]
+        }
+      />
+      <TextInput
+        allowFontScaling={true}
+        placeholder="email"
+        rejectResponderTermination={true}
+        style={
+          Array [
+            Object {
+              "alignSelf": "center",
+              "borderColor": "lightgray",
+              "borderRadius": 3,
+              "borderWidth": 1.3,
+              "color": "black",
+              "height": 40,
+              "marginBottom": 5,
+              "paddingBottom": 10,
+              "paddingLeft": 10,
+              "paddingRight": 10,
+              "paddingTop": 10,
+              "width": 320,
+            },
+          ]
+        }
+        testID="input-email"
+        textContentType="emailAddress"
+        underlineColorAndroid="transparent"
+        value="ethan1@test.com"
+      />
+      <TextInput
+        allowFontScaling={true}
+        placeholder="Password"
+        rejectResponderTermination={true}
+        secureTextEntry={true}
+        style={
+          Array [
+            Object {
+              "alignSelf": "center",
+              "borderColor": "lightgray",
+              "borderRadius": 3,
+              "borderWidth": 1.3,
+              "color": "black",
+              "height": 40,
+              "marginBottom": 5,
+              "paddingBottom": 10,
+              "paddingLeft": 10,
+              "paddingRight": 10,
+              "paddingTop": 10,
+              "width": 320,
+            },
+          ]
+        }
+        testID="input-password"
+        textContentType="password"
+        underlineColorAndroid="transparent"
+        value="test"
+      />
+      <Text
+        numberOfLines={1}
+        style={
+          Array [
+            Object {
+              "color": "#f57b51",
+              "marginBottom": 10,
+              "marginLeft": 0,
+              "marginRight": 0,
+              "marginTop": 10,
+              "textAlign": "center",
+              "width": 320,
+            },
+          ]
+        }
+        testID="error-text"
+      >
+        
+      </Text>
+      <TouchableOpacity
+        activeOpacity={0.5}
+        testID="btn-signin"
+      >
+        <View
+          style={
+            Array [
+              Object {
+                "alignItems": "center",
+                "alignSelf": "center",
+                "backgroundColor": "#069ccd",
+                "borderColor": "#069ccd",
+                "borderRadius": 4,
+                "borderWidth": 2,
+                "justifyContent": "center",
+                "marginBottom": 2,
+                "marginLeft": 2,
+                "marginRight": 2,
+                "marginTop": 2,
+                "minHeight": 35,
+                "width": 320,
+              },
+            ]
+          }
+        >
+          <Text
+            style={
+              Array [
+                Object {
+                  "color": "white",
+                  "fontSize": 14,
+                },
+              ]
+            }
+          >
+            SignIn
+          </Text>
+        </View>
+      </TouchableOpacity>
+      <Text
+        style={
+          Array [
+            Object {
+              "color": "#373d78",
+              "marginBottom": 10,
+              "marginLeft": 0,
+              "marginRight": 0,
+              "marginTop": 10,
+              "textAlign": "center",
+              "textDecorationColor": "black",
+              "textDecorationLine": "underline",
+              "textDecorationStyle": "solid",
+              "width": 320,
+            },
+          ]
+        }
+      >
+        Don't have an account yet?
+      </Text>
+    </View>
+  </View>
+</View>
+`;

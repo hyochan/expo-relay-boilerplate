@@ -1,14 +1,12 @@
-import 'react-native';
-
 import React, { ReactElement, Suspense } from 'react';
 import { RelayMockEnvironment, createMockEnvironment } from 'relay-test-utils';
-import { ThemeProvider, ThemeType } from '../src/providers/ThemeProvider';
+import { ThemeProvider, ThemeType } from '../providers/ThemeProvider';
 
-import { AuthProvider } from '../src/providers/AuthProvider';
-import ErrorBoundary from '../src/ErrorBoundary';
+import { AuthProvider } from './AuthProvider';
+import { Environment } from 'relay-runtime';
+import ErrorBoundary from '../ErrorBoundary';
 import { RelayEnvironmentProvider } from 'react-relay/hooks';
-import SuspenseScreen from '../src/components/screen/Suspense';
-import TestProvider from '../src/providers/TestProvider';
+import SuspenseScreen from '../components/screen/Suspense';
 
 interface Props {
   initialThemeType?: ThemeType;
@@ -19,7 +17,7 @@ interface RelayProvidersProps {
   children?: React.ReactElement;
 }
 
-const environment: RelayMockEnvironment = createMockEnvironment();
+export const environment: RelayMockEnvironment = createMockEnvironment();
 
 const RelayProviderWrapper = ({
   children,
@@ -33,26 +31,8 @@ const RelayProviderWrapper = ({
   );
 };
 
-export const createTestElement = (
-  child: ReactElement,
-  themeType?: ThemeType,
-): ReactElement => (
-  <TestProvider initialThemeType={themeType}>{child}</TestProvider>
-);
-
-export const createTestProps = (
-  obj: Record<string, unknown> = {},
-): Record<string, unknown> | unknown | any => ({
-  navigation: {
-    navigate: jest.fn(),
-    goBack: jest.fn(),
-    replace: jest.fn(),
-    setOptions: jest.fn(),
-  },
-  ...obj,
-});
-
-export const createTestProvider = ({
+// Add providers here
+const RootProvider = ({
   initialThemeType = ThemeType.LIGHT,
   children,
 }: Props): React.ReactElement => {
@@ -64,3 +44,5 @@ export const createTestProvider = ({
     </ThemeProvider>
   );
 };
+
+export default RootProvider;

@@ -91,15 +91,13 @@ function SignIn(props: Props): React.ReactElement {
       email,
       password,
     },
-    onCompleted: (response: SignInEmailMutationResponse): void => {
+    onCompleted: async (response: SignInEmailMutationResponse): void => {
       const { token, user } = response.signInEmail;
-      AsyncStorage.setItem('@UserStorage:login_token', token)
-        .then(() => {
-          setUser({
-            ...user,
-          });
-        })
-        .catch((e) => console.error(e));
+      await AsyncStorage.setItem('@UserStorage:login_token', token);
+
+      setUser({
+        ...user,
+      });
     },
     onError: (error): void => {
       console.error(error);
@@ -129,21 +127,23 @@ function SignIn(props: Props): React.ReactElement {
         }}
       />
       <StyledTextInput
+        testID="input-email"
         value={email}
         onChangeText={(value: string): void => setEmail(value)}
         textContentType="emailAddress"
         placeholder="email"
       />
       <StyledTextInput
+        testID="input-password"
         value={password}
         onChangeText={(value: string): void => setPassword(value)}
         textContentType="password"
         secureTextEntry={true}
         placeholder="Password"
       />
-      <ErrorMessage numberOfLines={1}>{error}</ErrorMessage>
+      <ErrorMessage testID="error-text" numberOfLines={1}>{error}</ErrorMessage>
       <Button
-        testID="btn-back"
+        testID="btn-signin"
         onClick={handleClick}
         text={'SignIn'}
         isLoading={isInFlight}

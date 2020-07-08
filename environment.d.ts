@@ -14,3 +14,7 @@ declare module '*.png' {
   const content;
   export default content;
 }
+
+declare module 'babel-plugin-relay/macro' {
+  export { graphql } from 'react-relay';
+}

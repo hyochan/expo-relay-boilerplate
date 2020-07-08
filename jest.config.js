@@ -5,7 +5,6 @@ const jestPreset = require('@testing-library/react-native/jest-preset');
 
 module.exports = {
   preset: '@testing-library/react-native',
-  automock: false,
   transform: {
     '^.+\\.js$': 'babel-jest',
     '^.+\\.tsx?$': 'ts-jest',
@@ -16,6 +15,7 @@ module.exports = {
   moduleFileExtensions: ['js', 'ts', 'tsx', 'svg', 'png'],
   globals: {
     'ts-jest': {
+      babelConfig: true,
       tsConfig: {
         jsx: 'react',
       },

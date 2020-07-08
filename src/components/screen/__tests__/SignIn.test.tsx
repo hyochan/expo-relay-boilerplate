@@ -3,65 +3,157 @@ import 'react-native';
 import React, { ReactElement } from 'react';
 import {
   RenderResult,
-  act,
   fireEvent,
   render,
+  wait,
+  waitForElement,
 } from '@testing-library/react-native';
 import { createTestElement, createTestProps } from '../../../../test/testUtils';
 
+import AsyncStorage from '@react-native-community/async-storage';
+import AuthContext from '../../../providers/AuthProvider';
+import { MockPayloadGenerator } from 'relay-test-utils';
 import SignIn from '../SignIn';
 import { ThemeType } from '../../../providers/ThemeProvider';
+import { act } from 'react-test-renderer';
+import { environment } from '../../../providers/TestProvider';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let props: any;
 let component: ReactElement;
 let testingLib: RenderResult;
 
-describe('[SignIn] render', () => {
-  props = createTestProps({
-    route: {
-      params: {
-        param: 'GO BACK',
-      },
-    },
+describe('[SignIn] rendering test', () => {
+  beforeEach(() => {
+    props = createTestProps();
+    component = createTestElement(<SignIn {...props} />);
   });
-  component = createTestElement(<SignIn {...props} />);
 
-  it('renders without crashing', () => {
+  it('should render without crashing', async () => {
+    component = createTestElement(<SignIn {...props} />);
     testingLib = render(component);
-    const { baseElement } = testingLib;
-    expect(baseElement).toMatchSnapshot();
-    expect(baseElement).toBeTruthy();
+
+    // Remove snapshot testing for now for issue https://github.com/VirgilSecurity/virgil-e3kit-js/issues/82
+    expect(testingLib.baseElement).toMatchSnapshot();
   });
 
-  it('should render [Dark] theme', () => {
-    props = createTestProps({
-      route: {
-        params: {
-          param: 'GO BACK',
-        },
-      },
-    });
+  it('should render [Dark] mode without crashing', () => {
     component = createTestElement(<SignIn {...props} />, ThemeType.DARK);
     testingLib = render(component);
-    const { baseElement } = testingLib;
-    expect(baseElement).toMatchSnapshot();
-    expect(baseElement).toBeTruthy();
+    expect(testingLib.baseElement).toBeTruthy();
   });
 });
 
-describe('[SignIn] Interaction', () => {
-  let renderResult: RenderResult;
-
-  beforeEach(() => {
-    renderResult = render(component);
+describe('[SignIn] interaction', () => {
+  beforeAll(() => {
+    props = createTestProps();
+    component = createTestElement(<SignIn {...props} />);
+    testingLib = render(component);
   });
 
-  it('should simulate [onClick] when button has been clicked', () => {
-    const btnInstance = renderResult.getByTestId('btn-back');
+  it('should invoke changeText event handler when email changed', async () => {
+    const emailInput = testingLib.getByTestId('input-email');
+    await waitForElement(() => emailInput); // why we should use it?
+
     act(() => {
-      fireEvent.press(btnInstance);
+      fireEvent.changeText(emailInput, 'email@email.com');
     });
-    expect(props.navigation.goBack).toHaveBeenCalled();
+
+    expect(emailInput.props.value).toEqual('email@email.com');
+  });
+
+  it('should invoke changeText event handler when password changed', async () => {
+    const passwordInput = testingLib.getByTestId('input-password');
+    await waitForElement(() => passwordInput); // why we should use it?
+
+    act(() => {
+      fireEvent.changeText(passwordInput, 'password');
+    });
+
+    expect(passwordInput.props.value).toEqual('password');
+  });
+
+  describe('about signin submit action', () => {
+    beforeAll(() => {
+      testingLib = render(component);
+      jest.spyOn(AsyncStorage, 'setItem').mockImplementation(jest.fn());
+      jest.spyOn(AuthContext, 'useAuthContext').mockImplementation(() => ({
+        state: {
+          user: undefined,
+          relay: environment,
+        },
+        setUser: jest.fn().mockReturnValue({
+          id: 'userId',
+          email: 'email@email.com',
+          nickname: 'nickname',
+          statusMessage: 'status',
+        }),
+        resetUser: jest.fn(),
+      }));
+    });
+    it('should make request to signin when button has pressed and navigation switchs to [MainStack]', async () => {
+      const emailText = testingLib.getByTestId('input-email');
+      await waitForElement(() => emailText);
+
+      act(() => {
+        fireEvent.changeText(emailText, 'email@email.com');
+      });
+
+      const passwordText = testingLib.getByTestId('input-password');
+      await waitForElement(() => passwordText);
+
+      act(() => {
+        fireEvent.changeText(passwordText, 'password');
+      });
+
+      const signinBtn = testingLib.getByTestId('btn-signin');
+      await waitForElement(() => signinBtn);
+
+      act(() => {
+        fireEvent.press(signinBtn);
+        environment.mock.resolveMostRecentOperation((operation) =>
+          MockPayloadGenerator.generate(operation),
+        );
+      });
+    });
+
+    it('should fail request to signin when button has pressed with wrong info', async () => {
+      const emailText = testingLib.getByTestId('input-email');
+      await waitForElement(() => emailText);
+
+      act(() => {
+        fireEvent.changeText(emailText, 'wrong-email@email.com');
+      });
+
+      const passwordText = testingLib.getByTestId('input-password');
+      await waitForElement(() => passwordText);
+
+      act(() => {
+        fireEvent.changeText(passwordText, 'wrong-password');
+      });
+
+      const signinBtn = testingLib.getByTestId('btn-signin');
+      await waitForElement(() => signinBtn);
+
+      act(() => {
+        fireEvent.press(signinBtn);
+        environment.mock.rejectMostRecentOperation(new Error('reject'));
+      });
+
+      const errorText = testingLib.getByTestId('error-text');
+      await act(() => wait());
+      expect(errorText).toBeTruthy();
+    });
+  });
+
+  it('should navigate to [SignUp] when button has pressed', async () => {
+    const signUpBtn = testingLib.getByText("Don't have an account yet?");
+    await waitForElement(() => signUpBtn);
+
+    act(() => {
+      fireEvent.press(signUpBtn);
+    });
+
+    expect(props.navigation.navigate).toHaveBeenCalledWith('SignUp');
   });
 });

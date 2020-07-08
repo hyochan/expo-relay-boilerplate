@@ -12,9 +12,9 @@
     "eject": "expo eject",
     "test": "node node_modules/jest/bin/jest.js",
     "lint": "eslint src --ext .ts,.tsx,.js,.jsx",
-    "relay": "yarn run relay-compiler --schema schema.graphql --src ./src/ --extensions ts tsx --language typescript --artifactDirectory ./src/__generated__ --watchman false $@",
-    "relay-watch": "yarn run relay-compiler --schema schema.graphql --src ./src/ --extensions ts tsx --language typescript --artifactDirectory ./src/__generated__ --watch",
-    "get-graphql-schema": "get-graphql-schema https://hackatalk.azurewebsites.net/graphql > schema.graphql"
+    "relay": "yarn run relay-compiler --schema src/relay/schema.graphql --src ./src/ --extensions ts tsx --language typescript --artifactDirectory ./src/__generated__ --watchman false $@",
+    "relay-watch": "yarn run relay-compiler --schema src/relay/schema.graphql --src ./src/ --extensions ts tsx --language typescript --artifactDirectory ./src/__generated__ --watch",
+    "get-graphql-schema": "get-graphql-schema https://hackatalk.azurewebsites.net/graphql > src/relay/schema.graphql"
   },
   "private": true,
   "version": "0.0.0",
@@ -65,9 +65,10 @@
     "@types/react-relay": "^7.0.7",
     "@types/react-test-renderer": "^16.9",
     "@types/relay-runtime": "^8.0.9",
+    "@types/relay-test-utils": "^6.0.2",
     "@types/styled-components": "^5.1.0",
     "abort-controller": "^3.0.0",
-    "babel-jest": "^26.0.1",
+    "babel-jest": "25.5.1",
     "babel-plugin-relay": "^9.1.0",
     "babel-preset-expo": "^8.1.0",
     "babel-preset-react-native": "4.0.1",
@@ -75,7 +76,7 @@
     "eslint": "^7.0.0",
     "eslint-plugin-relay": "^1.7.1",
     "get-graphql-schema": "^2.1.2",
-    "graphql": "^15.0.0",
+    "graphql": "^15.2.0",
     "jest": "^25.5.4",
     "jest-expo": "^37.0.0",
     "jest-expo-ts": "^22.0.1",
@@ -88,8 +89,11 @@
     "react-test-renderer": "^16.13.1",
     "relay-compiler": "^9.1.0",
     "relay-compiler-language-typescript": "^12.0.2",
+    "relay-config": "^9.1.0",
+    "relay-test-utils": "^9.1.0",
     "ts-jest": "^25.5.1",
     "tslib": "^1.11.2",
-    "typescript": "^3.8.3"
+    "typescript": "^3.8.3",
+    "ws": "^7.3.0"
   }
 }
