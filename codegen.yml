@@ -1,0 +1,7 @@
+overwrite: true
+schema:
+  - './src/relay/schema.graphql'
+generates:
+  src/types/graphql.ts:
+    plugins:
+      - 'typescript'
