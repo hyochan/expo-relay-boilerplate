@@ -8,7 +8,6 @@ import { AuthProvider } from '../src/providers/AuthProvider';
 import ErrorBoundary from '../src/ErrorBoundary';
 import { RelayEnvironmentProvider } from 'react-relay/hooks';
 import SuspenseScreen from '../src/components/screen/Suspense';
-import TestProvider from '../src/providers/TestProvider';
 
 interface Props {
   initialThemeType?: ThemeType;
@@ -19,7 +18,7 @@ interface RelayProvidersProps {
   children?: React.ReactElement;
 }
 
-const environment: RelayMockEnvironment = createMockEnvironment();
+export const environment: RelayMockEnvironment = createMockEnvironment();
 
 const RelayProviderWrapper = ({
   children,
@@ -30,6 +29,19 @@ const RelayProviderWrapper = ({
         <Suspense fallback={<SuspenseScreen />}>{children}</Suspense>
       </ErrorBoundary>
     </RelayEnvironmentProvider>
+  );
+};
+
+export const TestProvider = ({
+  initialThemeType = ThemeType.LIGHT,
+  children,
+}: Props): React.ReactElement => {
+  return (
+    <ThemeProvider initialThemeType={initialThemeType}>
+      <AuthProvider>
+        <RelayProviderWrapper>{children}</RelayProviderWrapper>
+      </AuthProvider>
+    </ThemeProvider>
   );
 };
 
@@ -51,16 +63,3 @@ export const createTestProps = (
   },
   ...obj,
 });
-
-export const createTestProvider = ({
-  initialThemeType = ThemeType.LIGHT,
-  children,
-}: Props): React.ReactElement => {
-  return (
-    <ThemeProvider initialThemeType={initialThemeType}>
-      <AuthProvider>
-        <RelayProviderWrapper>{children}</RelayProviderWrapper>
-      </AuthProvider>
-    </ThemeProvider>
-  );
-};

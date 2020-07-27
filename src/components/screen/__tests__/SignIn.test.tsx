@@ -8,7 +8,7 @@ import {
   wait,
   waitForElement,
 } from '@testing-library/react-native';
-import { createTestElement, createTestProps } from '../../../../test/testUtils';
+import { createTestElement, createTestProps, environment } from '../../../../test/testUtils';
 
 import AsyncStorage from '@react-native-community/async-storage';
 import AuthContext from '../../../providers/AuthProvider';
@@ -16,7 +16,6 @@ import { MockPayloadGenerator } from 'relay-test-utils';
 import SignIn from '../SignIn';
 import { ThemeType } from '../../../providers/ThemeProvider';
 import { act } from 'react-test-renderer';
-import { environment } from '../../../providers/TestProvider';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let props: any;
