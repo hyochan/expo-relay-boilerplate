@@ -2,19 +2,19 @@
 
 ## Motivation
 
-At React Conf 2019, React team have been announced experimental release version of React that supports [Concurrent mode and Suspense](https://reactjs.org/docs/concurrent-mode-intro.html).
+At the React Conf 2019, the React team announced an experimental release version of React that supports [Concurrent mode and Suspense](https://reactjs.org/docs/concurrent-mode-intro.html).
 
-Since we believe the relay is future client for react and graphql, we've created a boilerplate to keep maintain our envronment and share with others.
+Since we believe that Relay is the future client for React and GraphQL, we've created a boilerplate to maintain our environment and share with others.
 
-Also, bare in mind that this boilerplate is built on top of [expo](expo.io) to support universal platform (`ios`, `android`, `web`).
+Note here that this boilerplate is built on top of [expo](expo.io) to support universal platforms (`ios`, `android`, `web`).
 
 ## Basic Concept
 
-`React` breaks complex interfaces into **reusable** components reducing the coupling between desperate part of an application. And React components is **declarative**.
+`React` breaks complex interfaces into **reusable** components which allows us to reason in isolation about discrete units of an application and reduce coupling of disparate parts. Most importantly, React is a **declarative** language meaning that users should declare the prepared data instead of worrying about how to render it.
 
-**BUT** previous data fetching approach *(like REST)* doesn't take any advantages of React's component model. We needed a way to determine all the data needs up-front or statically.
+**BUT** previous data fetching approaches *(like REST)* don't take any advantages of React's component model. In order to take advantage of React’s component model, we need to think of a  way to determine all the data needs up-front or statically.
 
-`Relay` provides that components can specify one or multiple fragments for their data dependencies. Each of fragment has unique name within an application which allows us to determine what data needed to fetch and load all the required data in a single network request efficiently at runtime.
+In `Relay` , components can specify one or multiple fragments for their data dependencies. Each fragment has a unique name within an application. This allows us to determine which data is needed to fetch and load all the required data in a single network request efficiently at runtime.
 
 -- By [relay](https://relay.dev)
 
@@ -80,7 +80,7 @@ yarn relay-watch
 
 ## CONFIG
 
-You can configure environment by modifying config.sample.ts to config.ts.
+You can configure the environment by modifying config.sample.ts to config.ts.
 
 ```bash
 cp config.sample.ts config.ts
@@ -98,7 +98,7 @@ export const URL = {
 
 ### Configure relay runtime env
 
-The Relay env bundles together the configuration, cache storage, and network-handling that Relay needs in order to operate. And then relay runtime combines component with `graphql`.
+The Relay env bundles together the configuration, cache storage, and network-handling that Relay needs in order to operate. And then relay runtime combines that component with `graphql`.
 
 In order to render Relay components, you need to render a `RelayEnvironmentProvider` component at the root of the app.
 
@@ -162,7 +162,7 @@ import ErrorBoundary from '../';
 </RelayEnvironmentProvider>
 ```
 
-With Suspense, handing fetch errors works exactly the same way as handling rendering errors by defining `<ErrorBoundary>`
+With Suspense, handling fetch errors works exactly the same way as handling rendering errors by defining `<ErrorBoundary>`
 
 ### useFragment
 
@@ -251,7 +251,7 @@ const Friends: FC = (): React.ReactElement => {
 
 ### useMutation
 
-You can execute mutation using specified `graphql` template literal. By `isInFlight`, we can know the mutation pending status.
+You can execute a mutation using specified `graphql` template literals. By `isInFlight`, we can know the mutation pending status.
 
 ```tsx
 // SignIn.tsx
