@@ -1,3 +1,5 @@
+🛑 No Longer maintained. Check [relay-expo-workshop](https://github.com/hyochan/relay-expo-workshop) instead for the fresh version.
+
 # expo-relay-boilerplate
 
 ## Motivation
